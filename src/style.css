@@ -33,8 +33,8 @@
   --border-primary: #dee2e6;
   --border-secondary: #e9ecef;
   --border-tertiary: #ced4da;
-  --accent-primary: #212529;
-  --accent-primary-hover: #495057;
+  --accent-primary: #6c757d;
+  --accent-primary-hover: #5a6268;
   --accent-secondary: #343a40;
   --accent-muted: #6c757d;
   --success: #28a745;
@@ -44,12 +44,12 @@
   --warning: #ffc107;
   --input-bg: rgba(255, 255, 255, 0.9);
   --input-border: rgba(0, 0, 0, 0.15);
-  --input-focus-border: #007bff;
+  --input-focus-border: #6c757d;
   --input-focus-bg: #ffffff;
   --checkbox-bg: rgba(0, 0, 0, 0.05);
   --checkbox-border: rgba(0, 0, 0, 0.2);
-  --checkbox-checked-bg: #007bff;
-  --checkbox-checked-border: #007bff;
+  --checkbox-checked-bg: #6c757d;
+  --checkbox-checked-border: #6c757d;
 }
 
 :root {  
@@ -328,12 +328,12 @@ body {
   outline: none;
   border-color: var(--input-focus-border);
   background: var(--input-focus-bg);
-  box-shadow: 0 0 0 1px var(--input-focus-border), 0 0 0 3px rgba(0, 123, 255, 0.1);
+  box-shadow: 0 0 0 1px var(--input-focus-border), 0 0 0 3px rgba(108, 117, 125, 0.1);
 }
 
 [data-theme="light"] .form-input:focus,
 [data-theme="light"] .form-textarea:focus {
-  box-shadow: 0 0 0 1px var(--input-focus-border), 0 0 0 3px rgba(0, 123, 255, 0.1);
+  box-shadow: 0 0 0 1px var(--input-focus-border), 0 0 0 3px rgba(108, 117, 125, 0.1);
 }
 
 .form-input::placeholder,
@@ -648,7 +648,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #ffffff;
+  color: var(--bg-primary);
   font-size: 12px;
   font-weight: bold;
 }
