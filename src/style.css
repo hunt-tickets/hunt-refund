@@ -46,6 +46,10 @@
   --input-border: rgba(0, 0, 0, 0.15);
   --input-focus-border: #007bff;
   --input-focus-bg: #ffffff;
+  --checkbox-bg: rgba(0, 0, 0, 0.05);
+  --checkbox-border: rgba(0, 0, 0, 0.2);
+  --checkbox-checked-bg: #007bff;
+  --checkbox-checked-border: #007bff;
 }
 
 :root {  
@@ -58,6 +62,10 @@
   --input-border: rgba(255, 255, 255, 0.08);
   --input-focus-border: var(--accent-primary);
   --input-focus-bg: rgba(42, 42, 42, 0.8);
+  --checkbox-bg: rgba(255, 255, 255, 0.05);
+  --checkbox-border: rgba(255, 255, 255, 0.2);
+  --checkbox-checked-bg: var(--accent-primary);
+  --checkbox-checked-border: var(--accent-primary);
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -234,15 +242,23 @@ body {
 
 .form-logo {
   width: 40px;
-  height: auto;
+  height: 40px;
   margin: 0 auto 1.5rem auto;
   display: block;
   opacity: 0.9;
   transition: opacity 0.2s ease;
+  object-fit: contain;
+  object-position: center;
 }
 
 .form-logo:hover {
   opacity: 1;
+}
+
+[data-theme="light"] .form-logo {
+  content: url("https://db.hunt-tickets.com/storage/v1/object/public/default/logos/mini_black_logo.png");
+  width: 34px;
+  height: 34px;
 }
 
 .form-header h1 {
@@ -612,8 +628,8 @@ body {
 .checkmark {
   width: 18px;
   height: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--checkbox-bg);
+  border: 1px solid var(--checkbox-border);
   border-radius: 4px;
   position: relative;
   flex-shrink: 0;
@@ -622,8 +638,8 @@ body {
 }
 
 .checkbox-container input:checked + .checkmark {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
+  background: var(--checkbox-checked-bg);
+  border-color: var(--checkbox-checked-border);
 }
 
 .checkbox-container input:checked + .checkmark::after {
@@ -632,7 +648,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: var(--bg-primary);
+  color: #ffffff;
   font-size: 12px;
   font-weight: bold;
 }
