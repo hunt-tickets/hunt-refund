@@ -1,5 +1,4 @@
 import './style.css'
-import { WavyBackground } from './wavy-background.js'
 import { translations } from './translations.js'
 
 class RefundForm {
@@ -622,18 +621,6 @@ class RefundForm {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize wavy background
-  const wavyBg = new WavyBackground({
-    colors: ['#404040', '#505050', '#606060', '#707070', '#808080'],
-    waveWidth: 40,
-    backgroundFill: '#0a0a0a',
-    blur: 6,
-    speed: 'slow',
-    waveOpacity: 0.15
-  })
-  const bgElement = wavyBg.init()
-  document.body.appendChild(bgElement)
-  
   // Initialize form
   new RefundForm()
   
@@ -651,7 +638,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.setAttribute('data-theme', newTheme)
     localStorage.setItem('theme', newTheme)
   })
-  
-  // Store reference for cleanup
-  window.wavyBackground = wavyBg
 })
