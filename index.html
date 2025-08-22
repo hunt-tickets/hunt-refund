@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>Solicitud de Reembolso - Hunt Tickets</title>
+    <meta name="description" content="Formulario oficial de Hunt Tickets para solicitar reembolsos de manera rápida y segura. Complete sus datos y reciba respuesta en 2-3 días hábiles." />
+    <meta name="keywords" content="hunt tickets, reembolso, refund, tickets, solicitud, formulario" />
+    <meta name="author" content="Hunt Tickets" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Solicitud de Reembolso - Hunt Tickets" />
+    <meta property="og:description" content="Formulario oficial para solicitar reembolsos de Hunt Tickets" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://db.hunt-tickets.com/storage/v1/object/public/default/logos/mini_white_logo.png" />
+    <meta property="og:site_name" content="Hunt Tickets" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Solicitud de Reembolso - Hunt Tickets" />
+    <meta name="twitter:description" content="Formulario oficial para solicitar reembolsos de Hunt Tickets" />
+    <meta name="twitter:image" content="https://db.hunt-tickets.com/storage/v1/object/public/default/logos/mini_white_logo.png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://db.hunt-tickets.com/storage/v1/object/public/default/logos/mini_white_logo.png" />
+    <link rel="apple-touch-icon" href="https://db.hunt-tickets.com/storage/v1/object/public/default/logos/mini_white_logo.png" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    
+    
+    <!-- Security -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://db.hunt-tickets.com data:; connect-src 'self'; frame-ancestors 'none';" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+  </head>
+  <body>
+    <div id="app">
+      <section class="stripe-section"></section>
+      
+      <main class="container">
+        <header class="form-header">
+          <img src="https://db.hunt-tickets.com/storage/v1/object/public/default/logos/mini_white_logo.png" alt="Hunt Tickets Logo" class="form-logo">
+          <h1 data-es="Solicitud de Reembolso" data-en="Refund Request">Solicitud de Reembolso</h1>
+          <p data-es="Complete el formulario para procesar su solicitud de reembolso" data-en="Complete the form to process your refund request">Complete el formulario para procesar su solicitud de reembolso</p>
+        </header>
+
+        <section class="intro-section">
+          <div class="intro-content">
+            <div class="intro-header">
+              <h3 data-es="Antes de comenzar" data-en="Before you start">Antes de comenzar</h3>
+              <div class="language-toggle">
+                <button type="button" class="lang-btn active" data-lang="es">ES</button>
+                <button type="button" class="lang-btn" data-lang="en">EN</button>
+              </div>
+            </div>
+            <p data-es="Este proceso toma aproximadamente 2-3 minutos. Asegúrese de tener a mano su número de orden y cualquier documentación relevante." data-en="This process takes approximately 2-3 minutes. Make sure you have your order number and any relevant documentation at hand.">Este proceso toma aproximadamente 2-3 minutos. Asegúrese de tener a mano su número de orden y cualquier documentación relevante.</p>
+            
+            <div class="intro-requirements">
+              <h4 data-es="Documentos que puede necesitar:" data-en="Documents you may need:">Documentos que puede necesitar:</h4>
+              <ul>
+                <li data-es="Número de orden de compra" data-en="Purchase order number">Número de orden de compra</li>
+                <li data-es="Comprobante de pago (recomendado)" data-en="Payment receipt (recommended)">Comprobante de pago (recomendado)</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        
+        <form id="refund-form" class="refund-form" novalidate>
+          <div class="form-group">
+            <label for="fullName" class="form-label">
+              <span data-es="Nombre Completo" data-en="Full Name">Nombre Completo</span> <span class="required">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="fullName" 
+              name="fullName" 
+              class="form-input" 
+              required 
+              aria-describedby="fullName-error"
+              placeholder="Ingrese su nombre completo"
+              data-placeholder-es="Ingrese su nombre completo"
+              data-placeholder-en="Enter your full name"
+            />
+            <div id="fullName-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">
+              <span data-es="Correo Electrónico" data-en="Email Address">Correo Electrónico</span> <span class="required">*</span>
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              required 
+              aria-describedby="email-error"
+              placeholder="ejemplo@correo.com"
+              data-placeholder-es="ejemplo@correo.com"
+              data-placeholder-en="example@email.com"
+            />
+            <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="orderNumber" class="form-label">
+              <span data-es="Número de Pedido" data-en="Order Number">Número de Pedido</span> <span class="required">*</span>
+            </label>
+            <div class="input-with-prefix">
+              <span class="input-prefix">Orden #</span>
+              <input 
+                type="text" 
+                id="orderNumber" 
+                name="orderNumber" 
+                class="form-input form-input-with-prefix" 
+                required 
+                aria-describedby="orderNumber-error"
+                placeholder="123456"
+              />
+            </div>
+            <div id="orderNumber-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="reason" class="form-label">
+              <span data-es="Descripción o Motivo" data-en="Description or Reason">Descripción o Motivo</span> <span class="required">*</span>
+            </label>
+            <textarea 
+              id="reason" 
+              name="reason" 
+              class="form-textarea" 
+              required 
+              aria-describedby="reason-error"
+              placeholder="Describa el motivo de su solicitud de reembolso..."
+              data-placeholder-es="Describa el motivo de su solicitud de reembolso..."
+              data-placeholder-en="Describe the reason for your refund request..."
+              rows="4"
+            ></textarea>
+            <div id="reason-error" class="error-message" role="alert" aria-live="polite"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="attachments" class="form-label">
+              <span data-es="Archivos Adjuntos" data-en="Attachments">Archivos Adjuntos</span>
+              <span class="form-hint" data-es="Opcional - Imágenes, recibos, etc." data-en="Optional - Images, receipts, etc.">Opcional - Imágenes, recibos, etc.</span>
+            </label>
+            <div class="file-input-wrapper">
+              <input 
+                type="file" 
+                id="attachments" 
+                name="attachments" 
+                class="form-file" 
+                multiple 
+                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                aria-describedby="attachments-help"
+              />
+              <div class="file-input-display">
+                <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17,8 12,3 7,8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span class="file-text">Seleccionar archivos o arrastrar aquí</span>
+              </div>
+            </div>
+            <div id="attachments-help" class="form-hint" data-es="Formatos permitidos: JPG, PNG, PDF, DOC. Máximo 5MB por archivo." data-en="Allowed formats: JPG, PNG, PDF, DOC. Maximum 5MB per file.">Formatos permitidos: JPG, PNG, PDF, DOC. Máximo 5MB por archivo.</div>
+            <div id="file-list" class="file-list"></div>
+          </div>
+
+          <div class="form-separator"></div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <span data-es="Método de Reembolso" data-en="Refund Method">Método de Reembolso</span> <span class="required">*</span>
+            </label>
+            <div class="refund-method-selector">
+              <input type="radio" id="bre-b" name="refundMethod" value="breb" class="refund-radio" required>
+              <label for="bre-b" class="refund-option">
+                <svg class="refund-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="9" cy="9" r="4"></circle>
+                  <path d="M13 13l7 7"></path>
+                  <path d="M18 17l2 0"></path>
+                  <path d="M18 19l2 0"></path>
+                </svg>
+                <div class="refund-option-content">
+                  <span data-es="Bre-B" data-en="Bre-B">Bre-B</span>
+                  <small class="refund-option-note" data-es="Solo para Colombia" data-en="Colombia only">Solo para Colombia</small>
+                </div>
+              </label>
+              
+              <input type="radio" id="bank-account" name="refundMethod" value="bank" class="refund-radio" required>
+              <label for="bank-account" class="refund-option">
+                <svg class="refund-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12,2 22,7 22,17 2,17 2,7"></polygon>
+                  <line x1="6" y1="11" x2="6" y2="17"></line>
+                  <line x1="12" y1="11" x2="12" y2="17"></line>
+                  <line x1="18" y1="11" x2="18" y2="17"></line>
+                  <line x1="2" y1="20" x2="22" y2="20"></line>
+                </svg>
+                <span data-es="Cuenta Bancaria" data-en="Bank Account">Cuenta Bancaria</span>
+              </label>
+            </div>
+            <div id="refundMethod-error" class="error-message" role="alert" aria-live="polite"></div>
+            
+            <div id="breb-account-field" class="conditional-field" style="display: none;">
+              <label for="brebAccount" class="form-label">
+                <span data-es="Tu Cuenta Bre-B" data-en="Your Bre-B Account">Tu Cuenta Bre-B</span> <span class="required">*</span>
+              </label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">@</span>
+                <input 
+                  type="text" 
+                  id="brebAccount" 
+                  name="brebAccount" 
+                  class="form-input form-input-with-prefix" 
+                  aria-describedby="brebAccount-error"
+                  placeholder="usuario"
+                  data-placeholder-es="usuario"
+                  data-placeholder-en="username"
+                />
+              </div>
+              <div id="brebAccount-error" class="error-message" role="alert" aria-live="polite"></div>
+            </div>
+
+            <div id="bank-account-fields" class="conditional-field" style="display: none;">
+              <div class="bank-fields-grid">
+                <div class="form-group">
+                  <label for="accountNumber" class="form-label">
+                    <span data-es="Número de Cuenta" data-en="Account Number">Número de Cuenta</span> <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="accountNumber" 
+                    name="accountNumber" 
+                    class="form-input" 
+                    aria-describedby="accountNumber-error"
+                    placeholder="1234567890"
+                    data-placeholder-es="1234567890"
+                    data-placeholder-en="1234567890"
+                  />
+                  <div id="accountNumber-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="accountType" class="form-label">
+                    <span data-es="Tipo de Cuenta" data-en="Account Type">Tipo de Cuenta</span> <span class="required">*</span>
+                  </label>
+                  <select id="accountType" name="accountType" class="form-input" aria-describedby="accountType-error">
+                    <option value="" data-es="Seleccionar..." data-en="Select...">Seleccionar...</option>
+                    <option value="ahorros" data-es="Ahorros" data-en="Savings">Ahorros</option>
+                    <option value="corriente" data-es="Corriente" data-en="Checking">Corriente</option>
+                  </select>
+                  <div id="accountType-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="bankName" class="form-label">
+                    <span data-es="Banco" data-en="Bank">Banco</span> <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="bankName" 
+                    name="bankName" 
+                    class="form-input" 
+                    aria-describedby="bankName-error"
+                    placeholder="Nombre del banco"
+                    data-placeholder-es="Nombre del banco"
+                    data-placeholder-en="Bank name"
+                  />
+                  <div id="bankName-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="documentNumber" class="form-label">
+                    <span data-es="Número de Documento" data-en="Document Number">Número de Documento</span> <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="documentNumber" 
+                    name="documentNumber" 
+                    class="form-input" 
+                    aria-describedby="documentNumber-error"
+                    placeholder="12345678"
+                    data-placeholder-es="12345678"
+                    data-placeholder-en="12345678"
+                  />
+                  <div id="documentNumber-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="accountHolderName" class="form-label">
+                    <span data-es="Nombre Completo del Titular" data-en="Account Holder Full Name">Nombre Completo del Titular</span> <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="accountHolderName" 
+                    name="accountHolderName" 
+                    class="form-input" 
+                    aria-describedby="accountHolderName-error"
+                    placeholder="Nombre completo del titular de la cuenta"
+                    data-placeholder-es="Nombre completo del titular de la cuenta"
+                    data-placeholder-en="Full name of the account holder"
+                  />
+                  <div id="accountHolderName-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-policies">
+            <div class="policy-checkboxes">
+              <label class="checkbox-container">
+                <input type="checkbox" id="acceptTerms" required>
+                <span class="checkmark"></span>
+                <span class="checkbox-text">
+                  <span data-es="He leído y acepto los" data-en="I have read and accept the">He leído y acepto los</span>
+                  <a href="https://www.hunt-tickets.com/resources/terms-and-conditions" target="_blank" class="policy-link" data-es="Términos y Condiciones" data-en="Terms and Conditions">Términos y Condiciones</a>
+                  <span data-es="y la" data-en="and the">y la</span>
+                  <a href="https://www.hunt-tickets.com/resources/privacy" target="_blank" class="policy-link" data-es="Política de Privacidad" data-en="Privacy Policy">Política de Privacidad</a>
+                </span>
+              </label>
+              <div id="acceptTerms-error" class="error-message" role="alert" aria-live="polite"></div>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="submit-btn">
+              <span class="btn-text" data-es="Enviar Solicitud" data-en="Submit Request">Enviar Solicitud</span>
+              <div class="btn-loader" aria-hidden="true">
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </div>
+        </form>
+
+        <div id="success-message" class="success-message" role="alert" aria-live="polite" style="display: none;">
+          <svg class="success-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22,4 12,14.01 9,11.01"></polyline>
+          </svg>
+          <div>
+            <h3 data-es="Solicitud Enviada" data-en="Request Submitted">Solicitud Enviada</h3>
+            <p data-es="Su solicitud de reembolso ha sido enviada correctamente. Recibirá una respuesta en 2-3 días hábiles." data-en="Your refund request has been submitted successfully. You will receive a response within 2-3 business days.">Su solicitud de reembolso ha sido enviada correctamente. Recibirá una respuesta en 2-3 días hábiles.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
