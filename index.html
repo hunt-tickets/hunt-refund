@@ -57,9 +57,27 @@
           <div class="intro-content">
             <div class="intro-header">
               <h3 data-es="Antes de comenzar" data-en="Before you start">Antes de comenzar</h3>
-              <div class="language-toggle">
-                <button type="button" class="lang-btn active" data-lang="es">ES</button>
-                <button type="button" class="lang-btn" data-lang="en">EN</button>
+              <div class="header-controls">
+                <div class="language-toggle">
+                  <button type="button" class="lang-btn active" data-lang="es">ES</button>
+                  <button type="button" class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                  <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                  </svg>
+                  <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                </button>
               </div>
             </div>
             <p data-es="Este proceso toma aproximadamente 2-3 minutos. Asegúrese de tener a mano su número de orden y cualquier documentación relevante." data-en="This process takes approximately 2-3 minutes. Make sure you have your order number and any relevant documentation at hand.">Este proceso toma aproximadamente 2-3 minutos. Asegúrese de tener a mano su número de orden y cualquier documentación relevante.</p>
@@ -206,7 +224,10 @@
                   <line x1="18" y1="11" x2="18" y2="17"></line>
                   <line x1="2" y1="20" x2="22" y2="20"></line>
                 </svg>
-                <span data-es="Cuenta Bancaria" data-en="Bank Account">Cuenta Bancaria</span>
+                <div class="refund-option-content">
+                  <span data-es="Cuenta Bancaria" data-en="Bank Account">Cuenta Bancaria</span>
+                  <small class="refund-option-note" data-es="Hasta 15 días hábiles" data-en="Up to 15 business days">Hasta 15 días hábiles</small>
+                </div>
               </label>
             </div>
             <div id="refundMethod-error" class="error-message" role="alert" aria-live="polite"></div>
