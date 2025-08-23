@@ -11,6 +11,6 @@ export default defineConfig({
     }
   },
   preview: {
-    allowedHosts: ['hunt-refund-production.up.railway.app']
+    allowedHosts: ['hunt-refund-production.up.railway.app', 'refund.hunt-tickets.com']
   }
 })
