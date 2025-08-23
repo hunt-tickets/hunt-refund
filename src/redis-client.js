@@ -10,24 +10,24 @@ class RedisClient {
     this.analyticsBatcher = null
     
     // Safe environment variable access for client-side
-    const getEnvVar = (viteName, fallback = '') => {
+    const getEnvVar = (envName, fallback = '') => {
       if (typeof import.meta !== 'undefined' && import.meta.env) {
-        return import.meta.env[viteName] || fallback
+        return import.meta.env[envName] || fallback
       }
       return fallback
     }
     
     this.config = {
-      url: getEnvVar('VITE_REDIS_URL'),
-      host: getEnvVar('VITE_REDISHOST', 'localhost'),
-      port: parseInt(getEnvVar('VITE_REDISPORT', '6379')),
-      username: getEnvVar('VITE_REDISUSER'),
-      password: getEnvVar('VITE_REDISPASSWORD'),
-      rateLimitMax: parseInt(getEnvVar('VITE_REDIS_RATE_LIMIT_MAX', '5')),
-      rateLimitWindow: 60,           // 1 minuto - ultra eficiente
-      formCacheTTL: 60,             // 1 minuto - datos temporales
-      analyticsTTL: 300,            // 5 minutos - analytics mínimas
-      queueName: getEnvVar('VITE_REDIS_QUEUE_NAME', 'refund_forms')
+      url: getEnvVar('REDIS_URL'),
+      host: getEnvVar('REDISHOST', 'localhost'),
+      port: parseInt(getEnvVar('REDISPORT', '6379')),
+      username: getEnvVar('REDISUSER'),
+      password: getEnvVar('REDISPASSWORD'),
+      rateLimitMax: parseInt(getEnvVar('REDIS_RATE_LIMIT_MAX', '10')),
+      rateLimitWindow: parseInt(getEnvVar('REDIS_RATE_LIMIT_WINDOW', '60')),
+      formCacheTTL: parseInt(getEnvVar('REDIS_FORM_CACHE_TTL', '60')),
+      analyticsTTL: parseInt(getEnvVar('REDIS_ANALYTICS_TTL', '300')),
+      queueName: getEnvVar('REDIS_QUEUE_NAME', 'refund_forms')
     }
   }
 
