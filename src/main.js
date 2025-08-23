@@ -1,5 +1,6 @@
 import './style.css'
 import { translations } from './translations.js'
+import { redisClient } from './redis-client.js'
 
 class RefundForm {
   constructor() {
@@ -22,6 +23,13 @@ class RefundForm {
     this.setupEventListeners()
     this.setupFileUpload()
     this.setupLanguageToggle()
+    
+    // Track form initialization
+    this.trackFormInteraction('initialized', {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      timestamp: Date.now()
+    })
   }
 
   // Security: Sanitize input to prevent XSS attacks
@@ -93,24 +101,70 @@ class RefundForm {
     })
   }
 
-  // Security: Rate limiting for form submissions
-  checkRateLimit() {
-    const now = Date.now()
-    const oneMinute = 60 * 1000
+  // Security: Rate limiting for form submissions using Redis
+  async checkRateLimit() {
+    try {
+      // Generate user identifier (IP simulation using session storage)
+      const userIdentifier = this.getUserIdentifier()
+      
+      // Check rate limit using Redis
+      const rateLimit = await redisClient.checkRateLimit(userIdentifier)
+      
+      if (!rateLimit.allowed) {
+        const timeLeft = Math.ceil((rateLimit.resetTime - Date.now()) / 1000)
+        this.showError('form', `Demasiados intentos. Espere ${timeLeft} segundos.`)
+        
+        // Track analytics
+        await redisClient.trackAnalytics('rate_limit_exceeded', {
+          identifier: userIdentifier,
+          resetTime: rateLimit.resetTime
+        })
+        
+        return false
+      }
+      
+      // Track successful rate limit check
+      await redisClient.trackAnalytics('rate_limit_passed', {
+        identifier: userIdentifier,
+        remaining: rateLimit.remaining
+      })
+      
+      return true
+    } catch (error) {
+      console.error('Rate limit check failed:', error)
+      
+      // Fallback to original rate limiting if Redis fails
+      const now = Date.now()
+      const oneMinute = 60 * 1000
 
-    // Reset counter if more than a minute has passed
-    if (now - this.lastSubmissionTime > oneMinute) {
-      this.submissionAttempts = 0
+      // Reset counter if more than a minute has passed
+      if (now - this.lastSubmissionTime > oneMinute) {
+        this.submissionAttempts = 0
+      }
+
+      // Check if too many attempts
+      if (this.submissionAttempts >= this.maxAttemptsPerMinute) {
+        const timeLeft = Math.ceil((oneMinute - (now - this.lastSubmissionTime)) / 1000)
+        this.showError('form', `Demasiados intentos. Espere ${timeLeft} segundos.`)
+        return false
+      }
+
+      return true
     }
+  }
 
-    // Check if too many attempts
-    if (this.submissionAttempts >= this.maxAttemptsPerMinute) {
-      const timeLeft = Math.ceil((oneMinute - (now - this.lastSubmissionTime)) / 1000)
-      this.showError('form', `Demasiados intentos. Espere ${timeLeft} segundos.`)
-      return false
+  // Generate user identifier for rate limiting
+  getUserIdentifier() {
+    // Try to get existing session ID
+    let sessionId = sessionStorage.getItem('refund_form_session')
+    
+    if (!sessionId) {
+      // Generate new session ID
+      sessionId = 'session_' + Date.now().toString(36) + Math.random().toString(36).substr(2)
+      sessionStorage.setItem('refund_form_session', sessionId)
     }
-
-    return true
+    
+    return sessionId
   }
 
   setupEventListeners() {
@@ -162,6 +216,9 @@ class RefundForm {
   }
   
   handleRefundMethodChange(value, brebField, bankFields, bankFieldIds) {
+    // Track refund method selection
+    this.trackFormInteraction('refund_method_selected', { method: value })
+    
     // Hide all conditional fields first
     if (brebField) brebField.style.display = 'none'
     if (bankFields) bankFields.style.display = 'none'
@@ -222,6 +279,13 @@ class RefundForm {
 
   handleFileSelect(e) {
     const files = Array.from(e.target.files)
+    
+    // Track file uploads
+    this.trackFormInteraction('files_selected', { 
+      fileCount: files.length,
+      fileTypes: files.map(f => f.type),
+      totalSize: files.reduce((sum, f) => sum + f.size, 0)
+    })
     
     files.forEach(file => {
       if (this.validateFile(file)) {
@@ -454,16 +518,20 @@ class RefundForm {
   async handleSubmit(e) {
     e.preventDefault()
     
-    // Security: Rate limiting check
-    if (!this.checkRateLimit()) {
+    // Security: Rate limiting check with Redis
+    if (!(await this.checkRateLimit())) {
       return
     }
     
-    // Update submission tracking
+    // Update submission tracking (keep for fallback)
     this.submissionAttempts++
     this.lastSubmissionTime = Date.now()
     
     if (!this.validateForm()) {
+      // Track form validation failure
+      await redisClient.trackAnalytics('form_validation_failed', {
+        errors: this.getValidationErrors()
+      })
       return
     }
     
@@ -494,7 +562,23 @@ class RefundForm {
         fileCount: this.selectedFiles.length
       })
       
+      // Queue form submission for processing
+      const queueId = await redisClient.queueFormSubmission(Object.fromEntries(formData.entries()))
+      
+      if (queueId) {
+        console.info('Form queued for processing:', queueId)
+        await redisClient.trackAnalytics('form_queued', { queueId })
+      }
+      
+      // Still simulate for demo purposes
       await this.simulateSubmission(formData)
+      
+      // Track successful submission
+      await redisClient.trackAnalytics('form_submitted', {
+        queueId,
+        timestamp: Date.now(),
+        language: this.currentLang
+      })
       
       this.showSuccess()
       this.resetForm()
@@ -571,6 +655,12 @@ class RefundForm {
   switchLanguage(lang) {
     this.currentLang = lang
     
+    // Track language change
+    this.trackFormInteraction('language_changed', { 
+      from: this.currentLang, 
+      to: lang 
+    })
+    
     // Update toggle position and button states
     const toggle = document.querySelector('.language-toggle')
     document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -618,11 +708,48 @@ class RefundForm {
   t(key) {
     return translations[this.currentLang][key] || key
   }
+
+  // Get current validation errors for analytics
+  getValidationErrors() {
+    const errors = []
+    const requiredFields = this.form.querySelectorAll('input[required], textarea[required]')
+    
+    requiredFields.forEach(field => {
+      if (field.type !== 'checkbox' && field.classList.contains('error')) {
+        errors.push({
+          field: field.name,
+          type: 'validation_error'
+        })
+      }
+    })
+
+    // Check for specific validation errors
+    const refundMethod = document.querySelector('input[name="refundMethod"]:checked')
+    if (!refundMethod) {
+      errors.push({ field: 'refundMethod', type: 'required' })
+    }
+
+    const acceptTerms = document.getElementById('acceptTerms')
+    if (acceptTerms && !acceptTerms.checked) {
+      errors.push({ field: 'acceptTerms', type: 'required' })
+    }
+
+    return errors
+  }
+
+  // Track form interactions for analytics
+  async trackFormInteraction(action, data = {}) {
+    await redisClient.trackAnalytics(`form_${action}`, {
+      ...data,
+      language: this.currentLang,
+      timestamp: Date.now()
+    })
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize form
-  new RefundForm()
+  const refundForm = new RefundForm()
   
   // Theme toggle functionality
   const themeToggle = document.getElementById('theme-toggle')
@@ -638,6 +765,56 @@ document.addEventListener('DOMContentLoaded', () => {
       
       document.documentElement.setAttribute('data-theme', newTheme)
       localStorage.setItem('theme', newTheme)
+      
+      // Track theme change
+      refundForm.trackFormInteraction('theme_changed', { 
+        from: currentTheme, 
+        to: newTheme 
+      })
     })
   }
+  
+  // Track form abandonment
+  let formStarted = false
+  let formCompleted = false
+  
+  // Track when user starts filling form
+  document.addEventListener('input', () => {
+    if (!formStarted) {
+      formStarted = true
+      refundForm.trackFormInteraction('form_started')
+    }
+  })
+  
+  // Track form abandonment on page unload
+  window.addEventListener('beforeunload', () => {
+    if (formStarted && !formCompleted) {
+      refundForm.trackFormInteraction('form_abandoned', {
+        timeOnPage: Date.now() - performance.timing.navigationStart
+      })
+    }
+  })
+  
+  // Track form completion
+  document.getElementById('refund-form').addEventListener('submit', () => {
+    formCompleted = true
+  })
+  
+  // Auto-cleanup Redis every 5 minutes for cost optimization
+  setInterval(async () => {
+    try {
+      await redisClient.cleanup()
+    } catch (error) {
+      console.warn('Redis cleanup failed:', error)
+    }
+  }, 5 * 60 * 1000)  // Every 5 minutes
+  
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', async () => {
+    try {
+      await redisClient.cleanup()
+    } catch (error) {
+      // Silent fail on unload
+    }
+  })
 })

@@ -36,9 +36,8 @@
     
     <!-- Security -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://db.hunt-tickets.com data:; connect-src 'self'; frame-ancestors 'none';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://db.hunt-tickets.com data:; connect-src 'self';" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
   </head>
@@ -143,6 +142,8 @@
                 required 
                 aria-describedby="orderNumber-error"
                 placeholder="123456"
+                inputmode="numeric"
+                pattern="[0-9]*"
               />
             </div>
             <div id="orderNumber-error" class="error-message" role="alert" aria-live="polite"></div>
@@ -267,6 +268,8 @@
                     placeholder="1234567890"
                     data-placeholder-es="1234567890"
                     data-placeholder-en="1234567890"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                   />
                   <div id="accountNumber-error" class="error-message" role="alert" aria-live="polite"></div>
                 </div>
@@ -313,6 +316,8 @@
                     placeholder="12345678"
                     data-placeholder-es="12345678"
                     data-placeholder-en="12345678"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                   />
                   <div id="documentNumber-error" class="error-message" role="alert" aria-live="polite"></div>
                 </div>

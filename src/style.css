@@ -48,8 +48,8 @@
   --input-focus-bg: #ffffff;
   --checkbox-bg: rgba(0, 0, 0, 0.05);
   --checkbox-border: rgba(0, 0, 0, 0.2);
-  --checkbox-checked-bg: #6c757d;
-  --checkbox-checked-border: #6c757d;
+  --checkbox-checked-bg: #ffffff;
+  --checkbox-checked-border: #ffffff;
 }
 
 :root {  
@@ -64,8 +64,8 @@
   --input-focus-bg: rgba(42, 42, 42, 0.8);
   --checkbox-bg: rgba(255, 255, 255, 0.05);
   --checkbox-border: rgba(255, 255, 255, 0.2);
-  --checkbox-checked-bg: #606060;
-  --checkbox-checked-border: #606060;
+  --checkbox-checked-bg: #ffffff;
+  --checkbox-checked-border: #ffffff;
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -194,7 +194,7 @@ body {
   position: relative;
   display: inline-flex;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 2px;
   width: 80px;
   height: 32px;
@@ -220,7 +220,7 @@ body {
 }
 
 .lang-btn.active {
-  color: var(--bg-primary);
+  color: #ffffff;
 }
 
 .language-toggle::before {
@@ -541,6 +541,32 @@ body {
   color: var(--input-focus-border);
 }
 
+/* Dark mode: método seleccionado con iconos y texto blanco */
+:root .refund-radio:checked + .refund-option {
+  color: #ffffff;
+}
+
+:root .refund-radio:checked + .refund-option .refund-icon {
+  stroke: #ffffff;
+}
+
+:root .refund-radio:checked + .refund-option .refund-option-note {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Light mode: mantener colores grises */
+[data-theme="light"] .refund-radio:checked + .refund-option {
+  color: var(--input-focus-border);
+}
+
+[data-theme="light"] .refund-radio:checked + .refund-option .refund-icon {
+  stroke: var(--input-focus-border);
+}
+
+[data-theme="light"] .refund-radio:checked + .refund-option .refund-option-note {
+  color: var(--input-focus-border);
+}
+
 .refund-icon {
   width: 20px;
   height: 20px;
@@ -649,7 +675,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: var(--bg-primary);
+  color: #000000;
   font-size: 12px;
   font-weight: bold;
 }
