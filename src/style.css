@@ -1126,3 +1126,48 @@ body:has(.confirmation-section) .form-header {
     border: 2px solid #000;
   }
 }
+
+/* Error Page Styles */
+.error-section {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.error-content {
+  text-align: center;
+}
+
+.error-message {
+  margin: 2rem 0 3rem 0;
+}
+
+.error-message p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* Reduce header margin on error page */
+body:has(.error-section) .form-header {
+  margin: 2rem 0 1rem 0;
+}
+
+/* Mobile responsiveness for error page */
+@media (max-width: 768px) {
+  .error-section {
+    padding: 1rem;
+  }
+  
+  .error-message {
+    margin: 1.5rem 0 2rem 0;
+  }
+}
