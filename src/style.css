@@ -10,8 +10,8 @@
   --border-primary: #303030;
   --border-secondary: #1a1a1a;
   --border-tertiary: #404040;
-  --accent-primary: #ffffff;
-  --accent-primary-hover: #f0f0f0;
+  --accent-primary: #404040;
+  --accent-primary-hover: #505050;
   --accent-secondary: #e0e0e0;
   --accent-muted: #606060;
   --success: #ffffff;
@@ -60,12 +60,12 @@
   background-color: var(--bg-primary);
   --input-bg: rgba(32, 32, 32, 0.6);
   --input-border: rgba(255, 255, 255, 0.08);
-  --input-focus-border: var(--accent-primary);
+  --input-focus-border: #606060;
   --input-focus-bg: rgba(42, 42, 42, 0.8);
   --checkbox-bg: rgba(255, 255, 255, 0.05);
   --checkbox-border: rgba(255, 255, 255, 0.2);
-  --checkbox-checked-bg: var(--accent-primary);
-  --checkbox-checked-border: var(--accent-primary);
+  --checkbox-checked-bg: #606060;
+  --checkbox-checked-border: #606060;
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -536,6 +536,7 @@ body {
 
 .refund-radio:checked + .refund-option {
   border-color: var(--input-focus-border);
+  border-width: 2px;
   background: var(--input-focus-bg);
   color: var(--input-focus-border);
 }
@@ -690,7 +691,7 @@ body {
 }
 
 .btn-primary {
-  background: var(--accent-primary);
+  background: #ffffff;
   color: var(--bg-primary);
   width: 100%;
   font-weight: 600;
@@ -698,7 +699,7 @@ body {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-primary-hover);
+  background: #f0f0f0;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
 }
