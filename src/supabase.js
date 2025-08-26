@@ -15,9 +15,10 @@ class SupabaseClient {
 
   // Create authorization headers
   getHeaders(useServiceRole = false) {
+    const key = useServiceRole ? import.meta.env.VITE_SUPABASE_SERVICE_KEY : this.supabaseAnonKey
     return {
-      'apikey': this.supabaseAnonKey,
-      'Authorization': `Bearer ${this.supabaseAnonKey}`,
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
       'Content-Type': 'application/json',
       'Prefer': 'return=representation'
     }
@@ -39,7 +40,7 @@ class SupabaseClient {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: this.getHeaders(true), // Use service role for write operations
         body: JSON.stringify(refundData)
       })
 
@@ -62,11 +63,12 @@ class SupabaseClient {
     const url = `${this.supabaseUrl}/storage/v1/object/${this.storageBucket}/${filePath}`
 
     try {
+      const serviceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'apikey': this.supabaseAnonKey,
-          'Authorization': `Bearer ${this.supabaseAnonKey}`,
+          'apikey': serviceKey,
+          'Authorization': `Bearer ${serviceKey}`,
         },
         body: file
       })
