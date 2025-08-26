@@ -14,11 +14,9 @@ class SupabaseClient {
   }
 
   // Create authorization headers
-  getHeaders(useServiceRole = false) {
-    const key = useServiceRole ? import.meta.env.VITE_SUPABASE_SERVICE_KEY : this.supabaseAnonKey
+  getHeaders() {
     return {
-      'apikey': key,
-      'Authorization': `Bearer ${key}`,
+      'apikey': this.supabaseAnonKey,
       'Content-Type': 'application/json',
       'Prefer': 'return=representation'
     }
@@ -40,7 +38,7 @@ class SupabaseClient {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: this.getHeaders(false), // Use anon key for public access
+        headers: this.getHeaders(),
         body: JSON.stringify(refundData)
       })
 
@@ -67,7 +65,6 @@ class SupabaseClient {
         method: 'POST',
         headers: {
           'apikey': this.supabaseAnonKey,
-          'Authorization': `Bearer ${this.supabaseAnonKey}`,
         },
         body: file
       })
