@@ -15,6 +15,10 @@ class SupabaseClient {
 
   // Create authorization headers
   getHeaders() {
+    // Debug: Check if anon key is loaded
+    console.log('Anon key loaded:', this.supabaseAnonKey ? 'YES' : 'NO')
+    console.log('Anon key starts with:', this.supabaseAnonKey?.substring(0, 15) + '...')
+    
     return {
       'apikey': this.supabaseAnonKey,
       'Content-Type': 'application/json',
