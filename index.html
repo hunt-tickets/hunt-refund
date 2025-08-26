@@ -278,10 +278,12 @@
                   <label for="accountType" class="form-label">
                     <span data-es="Tipo de Cuenta" data-en="Account Type">Tipo de Cuenta</span> <span class="required">*</span>
                   </label>
-                  <select id="accountType" name="accountType" class="form-input" aria-describedby="accountType-error">
+                  <select id="accountType" name="accountType" class="form-input form-select" aria-describedby="accountType-error">
                     <option value="" data-es="Seleccionar..." data-en="Select...">Seleccionar...</option>
                     <option value="ahorros" data-es="Ahorros" data-en="Savings">Ahorros</option>
                     <option value="corriente" data-es="Corriente" data-en="Checking">Corriente</option>
+                    <option value="deposito_electronico" data-es="Depósito Electrónico" data-en="Electronic Deposit">Depósito Electrónico</option>
+                    <option value="otro" data-es="Otro" data-en="Other">Otro</option>
                   </select>
                   <div id="accountType-error" class="error-message" role="alert" aria-live="polite"></div>
                 </div>

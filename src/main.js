@@ -22,6 +22,81 @@ class RefundForm {
     this.setupEventListeners()
     this.setupFileUpload()
     this.setupLanguageToggle()
+    this.preloadDataFromUrl()
+  }
+
+  // Función para leer parámetros de la URL
+  getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search)
+    const params = {}
+    
+    for (const [key, value] of urlParams.entries()) {
+      params[key] = value
+    }
+    
+    return params
+  }
+
+  // Mapeo limitado de parámetros URL a campos específicos
+  getFieldMapping() {
+    return {
+      // Solo campos permitidos: correo, número de orden y nombre completo
+      'fullName': 'fullName',
+      'email': 'email', 
+      'orderNumber': 'orderNumber',
+      
+      // Aliases comunes
+      'name': 'fullName',
+      'correo': 'email',
+      'orden': 'orderNumber',
+      'order': 'orderNumber'
+    }
+  }
+
+  // Función para precargar datos desde la URL
+  preloadDataFromUrl() {
+    const urlParams = this.getUrlParams()
+    const fieldMapping = this.getFieldMapping()
+    
+    // Verificar si hay parámetros para precargar
+    if (Object.keys(urlParams).length === 0) {
+      return
+    }
+    
+    console.info('Precargando datos desde URL:', urlParams)
+    
+    for (const [urlParam, value] of Object.entries(urlParams)) {
+      // Obtener el nombre real del campo usando el mapeo
+      const fieldName = fieldMapping[urlParam]
+      
+      if (fieldName) {
+        this.setFieldValue(fieldName, value)
+      }
+    }
+  }
+
+  // Función para establecer el valor de un campo
+  setFieldValue(fieldName, value) {
+    const field = document.getElementById(fieldName)
+    
+    if (!field) {
+      console.warn(`Campo no encontrado: ${fieldName}`)
+      return
+    }
+    
+    // Sanitizar el valor antes de establecerlo
+    const sanitizedValue = this.sanitizeInput(value.toString())
+    
+    // Validar que el valor sea seguro y válido
+    if (!this.isValidInput(sanitizedValue, fieldName)) {
+      console.warn(`Valor inválido para ${fieldName}: ${value}`)
+      return
+    }
+    
+    // Establecer el valor
+    field.value = sanitizedValue
+    
+    console.info(`Campo precargado: ${fieldName} = ${sanitizedValue}`)
   }
 
   // Security: Sanitize input to prevent XSS attacks
