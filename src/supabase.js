@@ -38,11 +38,16 @@ class SupabaseClient {
   // Create refund record in Supabase
   async createRefund(refundData) {
     const url = `${this.supabaseUrl}/rest/v1/refunds`
+    const headers = this.getHeaders()
+    
+    // Debug: Log exactly what headers are being sent
+    console.log('Headers being sent:', headers)
+    console.log('Full request details:', { url, headers, body: JSON.stringify(refundData) })
     
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers,
         body: JSON.stringify(refundData)
       })
 
