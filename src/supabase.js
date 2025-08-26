@@ -40,7 +40,7 @@ class SupabaseClient {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: this.getHeaders(true), // Use service role for write operations
+        headers: this.getHeaders(false), // Use anon key for public access
         body: JSON.stringify(refundData)
       })
 
@@ -63,12 +63,11 @@ class SupabaseClient {
     const url = `${this.supabaseUrl}/storage/v1/object/${this.storageBucket}/${filePath}`
 
     try {
-      const serviceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'apikey': serviceKey,
-          'Authorization': `Bearer ${serviceKey}`,
+          'apikey': this.supabaseAnonKey,
+          'Authorization': `Bearer ${this.supabaseAnonKey}`,
         },
         body: file
       })
