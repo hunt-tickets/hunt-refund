@@ -1,5 +1,6 @@
 import './style.css'
 import { translations } from './translations.js'
+import { supabase } from './supabase.js'
 
 class RefundForm {
   constructor() {
@@ -9,6 +10,7 @@ class RefundForm {
     this.fileList = document.getElementById('file-list')
     this.fileInputDisplay = document.querySelector('.file-input-display .file-text')
     this.successMessage = document.getElementById('success-message')
+    this.progressLoader = document.getElementById('progress-loader')
     this.selectedFiles = []
     this.currentLang = 'es'
     this.lastSubmissionTime = 0
@@ -583,37 +585,160 @@ class RefundForm {
         fileCount: this.selectedFiles.length
       })
       
-      // Simulate form submission
-      await this.simulateSubmission(formData)
+      // Show progress loader
+      this.showProgressLoader()
+      
+      // Submit to Supabase
+      const result = await this.submitToSupabase(formData)
+      
+      // Hide progress loader and show success
+      this.hideProgressLoader()
+      
+      // Display case number in success message
+      const caseNumberDisplay = document.getElementById('case-number-display')
+      if (caseNumberDisplay && result.refund && result.refund.id) {
+        caseNumberDisplay.textContent = result.refund.id
+      }
       
       this.showSuccess()
       this.resetForm()
       
     } catch (error) {
       console.error('Error submitting form:', error)
+      
+      // Hide progress loader and show error
+      this.hideProgressLoader()
+      this.form.style.display = 'block'
+      
       this.showError('form', this.t('form-error'))
     } finally {
       this.setLoading(false)
     }
   }
 
-  async simulateSubmission(formData) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Form submission data:')
-        for (let [key, value] of formData.entries()) {
-          if (value instanceof File) {
-            console.log(`${key}:`, `File: ${value.name} (${value.size} bytes)`)
-          } else if (key === 'orderNumber') {
-            // Add prefix to order number for submission
-            console.log(`${key}:`, `Orden #${value}`)
-          } else {
-            console.log(`${key}:`, value)
-          }
-        }
-        resolve()
-      }, 2000)
-    })
+  async submitToSupabase(formData) {
+    try {
+      // Step 1: Validating information
+      this.updateProgress('validate', 10)
+      await this.delay(800)
+      
+      // Generate UUID for this refund
+      const refundId = supabase.generateUUID()
+      
+      // Format data for Supabase
+      const refundData = supabase.formatRefundData(formData, refundId)
+      
+      console.log('Submitting refund data:', refundData)
+      this.completeStep('validate')
+      
+      // Step 2: Storing information
+      this.updateProgress('save', 35)
+      await this.delay(1000)
+      
+      // Create refund record in Supabase
+      const refundRecord = await supabase.createRefund(refundData)
+      console.log('Refund created successfully:', refundRecord)
+      this.completeStep('save')
+      
+      // Step 3: Upload files if any
+      let uploadedFiles = []
+      if (this.selectedFiles.length > 0) {
+        this.updateProgress('upload', 60)
+        await this.delay(500)
+        
+        console.log('Uploading files to storage...')
+        uploadedFiles = await supabase.uploadFiles(refundId, this.selectedFiles)
+        console.log('Files uploaded successfully:', uploadedFiles)
+        this.completeStep('upload')
+        
+        // Step 4: Creating case number
+        this.updateProgress('notify', 85)
+      } else {
+        // Step 3: Creating case number (no files to upload)
+        this.updateProgress('notify', 70)
+      }
+      
+      await this.delay(800)
+      
+      // Prepare webhook data
+      const webhookData = {
+        refund: refundRecord,
+        attachments: uploadedFiles,
+        timestamp: new Date().toISOString(),
+        source: 'refund-form'
+      }
+      
+      // Send webhook to Railway
+      console.log('Sending webhook to Railway...')
+      await supabase.sendWebhook(webhookData)
+      console.log('Webhook sent successfully')
+      
+      this.completeStep('notify')
+      this.updateProgress('complete', 100)
+      await this.delay(500)
+      
+      return {
+        refund: refundRecord,
+        files: uploadedFiles
+      }
+      
+    } catch (error) {
+      console.error('Error in form submission:', error)
+      throw error
+    }
+  }
+
+  // Progress loader methods
+  showProgressLoader() {
+    this.form.style.display = 'none'
+    this.progressLoader.style.display = 'block'
+    this.progressLoader.scrollIntoView({ behavior: 'smooth' })
+    
+    // Show upload step only if there are files
+    const uploadStep = document.querySelector('[data-step="upload"]')
+    const finalStepNumber = document.getElementById('final-step-number')
+    
+    if (this.selectedFiles.length > 0) {
+      uploadStep.style.display = 'flex'
+      finalStepNumber.textContent = '4'
+    } else {
+      uploadStep.style.display = 'none'  
+      finalStepNumber.textContent = '3'
+    }
+  }
+
+  hideProgressLoader() {
+    this.progressLoader.style.display = 'none'
+  }
+
+  updateProgress(stepName, progress = 0) {
+    const step = document.querySelector(`[data-step="${stepName}"]`)
+    const progressFill = document.querySelector('.progress-fill')
+    
+    if (step) {
+      // Mark current step as active
+      document.querySelectorAll('.progress-step').forEach(s => {
+        s.classList.remove('active')
+      })
+      step.classList.add('active')
+    }
+    
+    // Update progress bar
+    if (progressFill) {
+      progressFill.style.width = `${progress}%`
+    }
+  }
+
+  completeStep(stepName) {
+    const step = document.querySelector(`[data-step="${stepName}"]`)
+    if (step) {
+      step.classList.remove('active')
+      step.classList.add('completed')
+    }
+  }
+
+  async delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   setLoading(loading) {

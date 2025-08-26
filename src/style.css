@@ -762,10 +762,21 @@ body {
   box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
 }
 
+[data-theme="light"] .btn-primary {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  box-shadow: 0 4px 16px rgba(33, 37, 41, 0.15);
+}
+
 .btn-primary:hover:not(:disabled) {
   background: #f0f0f0;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .btn-primary:hover:not(:disabled) {
+  background: var(--text-secondary);
+  box-shadow: 0 8px 24px rgba(33, 37, 41, 0.2);
 }
 
 .btn-primary:disabled {
@@ -801,9 +812,199 @@ body {
   animation: spin 1s linear infinite;
 }
 
+[data-theme="light"] .spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Progress Loader Styles */
+.progress-loader {
+  display: none;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--border-primary);
+  border-radius: 16px;
+  margin-top: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.progress-container {
+  max-width: 100%;
+}
+
+.progress-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.progress-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progress-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.progress-steps {
+  margin-bottom: 2rem;
+}
+
+.progress-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.progress-step:last-child {
+  margin-bottom: 0;
+}
+
+.progress-step.active {
+  opacity: 1;
+}
+
+.progress-step.completed {
+  opacity: 0.8;
+}
+
+.step-indicator {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-primary);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .step-indicator {
+  border-color: var(--accent-primary);
+  background: var(--bg-quaternary);
+}
+
+.progress-step.completed .step-indicator {
+  border-color: #22c55e;
+  background: #22c55e;
+}
+
+.step-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: opacity 0.2s ease;
+}
+
+.progress-step.active .step-number {
+  opacity: 0;
+}
+
+.progress-step.completed .step-number {
+  opacity: 0;
+}
+
+.step-spinner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-primary);
+  border-top: 2px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progress-step.active .step-spinner {
+  opacity: 1;
+}
+
+.step-check {
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progress-step.completed .step-check {
+  opacity: 1;
+}
+
+.step-content {
+  flex: 1;
+  padding-top: 0.25rem;
+}
+
+.step-title {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.step-description {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), #22c55e);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.case-number {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.case-number strong {
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.9rem;
+}
+
+.case-number span {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
 }
 
 .success-message {
