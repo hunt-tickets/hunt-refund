@@ -596,8 +596,8 @@ class RefundForm {
       
       // Display case number in success message
       const caseNumberDisplay = document.getElementById('case-number-display')
-      if (caseNumberDisplay && result.refund && result.refund.id) {
-        caseNumberDisplay.textContent = result.refund.id
+      if (caseNumberDisplay && result.caseNumber) {
+        caseNumberDisplay.textContent = result.caseNumber
       }
       
       this.showSuccess()
@@ -661,8 +661,8 @@ class RefundForm {
       
       // Send everything to webhook at once
       console.log('Sending all data to webhook...')
-      await webhookClient.sendWebhook(webhookData)
-      console.log('Data sent successfully to webhook')
+      const caseNumber = await webhookClient.sendWebhook(webhookData)
+      console.log('Data sent successfully to webhook, case number:', caseNumber)
       
       this.completeStep('notify')
       this.updateProgress('complete', 100)
@@ -670,7 +670,8 @@ class RefundForm {
       
       return {
         refund: refundData,
-        files: processedFiles
+        files: processedFiles,
+        caseNumber: caseNumber
       }
       
     } catch (error) {

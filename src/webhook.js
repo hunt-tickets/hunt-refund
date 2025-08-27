@@ -42,8 +42,10 @@ class WebhookClient {
         throw new Error(`Webhook failed: HTTP ${response.status}: ${errorText}`)
       }
 
-      const result = await response.text()
-      return result
+      // The webhook returns the case number as plain text
+      const caseNumber = await response.text()
+      console.log('Case number received from webhook:', caseNumber)
+      return caseNumber.trim() // Return the case number, removing any whitespace
     } catch (error) {
       console.error('Error sending webhook:', error)
       throw error
