@@ -154,12 +154,15 @@ body {
 }
 
 .intro-header {
-  text-align: center;
-  margin-bottom: 1rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
 }
 
 .intro-header h3 {
   margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .header-controls {
@@ -457,7 +460,7 @@ body {
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 2.5rem;
   margin-bottom: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
@@ -469,19 +472,20 @@ body {
 }
 
 .intro-content p {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 2rem 0;
   color: var(--text-secondary);
   line-height: 1.6;
+  font-size: 1rem;
 }
 
 .intro-requirements {
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .intro-requirements h4 {
   font-size: 1rem;
   font-weight: 500;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 1rem 0;
   color: var(--text-primary);
 }
 
@@ -492,7 +496,12 @@ body {
 }
 
 .intro-requirements li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.intro-requirements li:last-child {
+  margin-bottom: 0;
 }
 
 .file-input-wrapper {
@@ -1010,6 +1019,7 @@ body {
   
   .intro-section {
     border-radius: 16px;
+    padding: 1.5rem;
   }
   
   .form-header {
