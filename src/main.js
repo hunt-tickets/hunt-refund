@@ -610,10 +610,14 @@ class RefundForm {
       this.hideProgressLoader()
       this.form.style.display = 'block'
       
-      // Show intro-section again on error
+      // Show intro-section and header again on error
       const introSection = document.querySelector('.intro-section')
+      const formHeader = document.querySelector('.form-header')
       if (introSection) {
         introSection.style.display = 'block'
+      }
+      if (formHeader) {
+        formHeader.style.display = 'block'
       }
       
       this.showError('form', this.t('form-error'))
@@ -728,8 +732,12 @@ class RefundForm {
 
   showSuccess() {
     const introSection = document.querySelector('.intro-section')
+    const formHeader = document.querySelector('.form-header')
     if (introSection) {
       introSection.style.display = 'none'
+    }
+    if (formHeader) {
+      formHeader.style.display = 'none'
     }
     this.successMessage.style.display = 'flex'
     this.successMessage.scrollIntoView({ behavior: 'smooth' })

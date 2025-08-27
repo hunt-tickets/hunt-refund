@@ -898,16 +898,17 @@ body {
 .case-number {
   margin-top: 1rem;
   padding: 1rem;
-  background: var(--bg-tertiary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .case-number strong {
   color: var(--text-secondary);
   display: block;
   margin-bottom: 0.5rem;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.9rem;
 }
 
@@ -915,23 +916,27 @@ body {
   color: var(--text-primary);
   font-size: 1.1rem;
   letter-spacing: 0.5px;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .success-message {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: var(--success-bg);
-  border: 1px solid var(--border-tertiary);
-  border-radius: 12px;
-  padding: 1.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 16px;
+  padding: 2.5rem;
   margin: 1.5rem 0 2rem 0;
   color: var(--text-primary);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3), 
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .success-icon {
-  color: var(--success);
+  color: #22c55e;
   flex-shrink: 0;
   margin-top: 0.125rem;
 }
@@ -940,11 +945,14 @@ body {
   margin: 0 0 0.5rem 0;
   font-size: 1.125rem;
   font-weight: 600;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .success-message p {
   margin: 0;
   color: var(--text-secondary);
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
 }
 
 @media (max-width: 640px) {
