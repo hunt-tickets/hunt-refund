@@ -37,7 +37,7 @@
     <!-- Security -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://automations.hunt-tickets.com;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://db.hunt-tickets.com data:; connect-src 'self' https://automations.hunt-tickets.com;" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
   </head>
@@ -372,65 +372,12 @@
         </form>
 
         <!-- Progress Loader -->
-        <div id="progress-loader" class="progress-loader" role="alert" aria-live="polite" style="display: none;">
-          <div class="progress-container">
-            <div class="progress-header">
-              <h3 data-es="Procesando Solicitud" data-en="Processing Request">Procesando Solicitud</h3>
-              <p data-es="Por favor espere mientras procesamos su información" data-en="Please wait while we process your information">Por favor espere mientras procesamos su información</p>
-            </div>
-            
-            <div class="progress-steps">
-              <div class="progress-step" data-step="validate">
-                <div class="step-indicator">
-                  <div class="step-number">1</div>
-                  <div class="step-spinner"></div>
-                  <div class="step-check">✓</div>
-                </div>
-                <div class="step-content">
-                  <span class="step-title" data-es="Validando información" data-en="Validating information">Validando información</span>
-                  <span class="step-description" data-es="Verificando datos del formulario" data-en="Verifying form data">Verificando datos del formulario</span>
-                </div>
-              </div>
-
-              <div class="progress-step" data-step="save">
-                <div class="step-indicator">
-                  <div class="step-number">2</div>
-                  <div class="step-spinner"></div>
-                  <div class="step-check">✓</div>
-                </div>
-                <div class="step-content">
-                  <span class="step-title" data-es="Almacenando información" data-en="Storing information">Almacenando información</span>
-                  <span class="step-description" data-es="Guardando su solicitud de reembolso" data-en="Saving your refund request">Guardando su solicitud de reembolso</span>
-                </div>
-              </div>
-
-              <div class="progress-step" data-step="upload" style="display: none;">
-                <div class="step-indicator">
-                  <div class="step-number">3</div>
-                  <div class="step-spinner"></div>
-                  <div class="step-check">✓</div>
-                </div>
-                <div class="step-content">
-                  <span class="step-title" data-es="Subiendo archivos" data-en="Uploading files">Subiendo archivos</span>
-                  <span class="step-description" data-es="Procesando documentos adjuntos" data-en="Processing attached documents">Procesando documentos adjuntos</span>
-                </div>
-              </div>
-
-              <div class="progress-step" data-step="notify">
-                <div class="step-indicator">
-                  <div class="step-number" id="final-step-number">3</div>
-                  <div class="step-spinner"></div>
-                  <div class="step-check">✓</div>
-                </div>
-                <div class="step-content">
-                  <span class="step-title" data-es="Creando número de caso" data-en="Creating case number">Creando número de caso</span>
-                  <span class="step-description" data-es="Generando identificador único" data-en="Generating unique identifier">Generando identificador único</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-bar">
-              <div class="progress-fill"></div>
+        <div id="progress-loader" class="simple-loader" role="alert" aria-live="polite" style="display: none;">
+          <div class="loader-container">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">
+              <h3 data-es="Enviando Solicitud..." data-en="Submitting Request...">Enviando Solicitud...</h3>
+              <p data-es="Por favor espere un momento" data-en="Please wait a moment">Por favor espere un momento</p>
             </div>
           </div>
         </div>

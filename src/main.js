@@ -560,6 +560,9 @@ class RefundForm {
     
     this.setLoading(true)
     
+    // Show progress loader immediately after validation
+    this.showProgressLoader()
+    
     try {
       const formData = new FormData()
       
@@ -584,9 +587,6 @@ class RefundForm {
         fields: Array.from(formData.keys()),
         fileCount: this.selectedFiles.length
       })
-      
-      // Show progress loader
-      this.showProgressLoader()
       
       // Submit to Webhook
       const result = await this.submitToWebhook(formData)
@@ -618,38 +618,20 @@ class RefundForm {
 
   async submitToWebhook(formData) {
     try {
-      // Step 1: Validating information
-      this.updateProgress('validate', 10)
-      await this.delay(800)
-      
       // Generate UUID for this refund
       const refundId = webhookClient.generateUUID()
       
       // Format data for webhook
       const refundData = webhookClient.formatRefundData(formData, refundId)
-      
       console.log('Preparing refund data:', refundData)
-      this.completeStep('validate')
       
-      // Step 2: Processing files
+      // Process files if any
       let processedFiles = []
       if (this.selectedFiles.length > 0) {
-        this.updateProgress('upload', 35)
-        await this.delay(500)
-        
         console.log('Processing files...')
         processedFiles = await this.processFilesForWebhook(this.selectedFiles)
         console.log('Files processed successfully:', processedFiles.length)
-        this.completeStep('upload')
-        
-        // Step 3: Sending data
-        this.updateProgress('notify', 70)
-      } else {
-        // Step 2: Sending data (no files to process)
-        this.updateProgress('notify', 50)
       }
-      
-      await this.delay(800)
       
       // Prepare webhook data with all information
       const webhookData = {
@@ -663,10 +645,6 @@ class RefundForm {
       console.log('Sending all data to webhook...')
       const caseNumber = await webhookClient.sendWebhook(webhookData)
       console.log('Data sent successfully to webhook, case number:', caseNumber)
-      
-      this.completeStep('notify')
-      this.updateProgress('complete', 100)
-      await this.delay(500)
       
       return {
         refund: refundData,
@@ -713,53 +691,15 @@ class RefundForm {
     })
   }
 
-  // Progress loader methods
+  // Simple loader methods
   showProgressLoader() {
     this.form.style.display = 'none'
     this.progressLoader.style.display = 'block'
     this.progressLoader.scrollIntoView({ behavior: 'smooth' })
-    
-    // Show upload step only if there are files
-    const uploadStep = document.querySelector('[data-step="upload"]')
-    const finalStepNumber = document.getElementById('final-step-number')
-    
-    if (this.selectedFiles.length > 0) {
-      uploadStep.style.display = 'flex'
-      finalStepNumber.textContent = '4'
-    } else {
-      uploadStep.style.display = 'none'  
-      finalStepNumber.textContent = '3'
-    }
   }
 
   hideProgressLoader() {
     this.progressLoader.style.display = 'none'
-  }
-
-  updateProgress(stepName, progress = 0) {
-    const step = document.querySelector(`[data-step="${stepName}"]`)
-    const progressFill = document.querySelector('.progress-fill')
-    
-    if (step) {
-      // Mark current step as active
-      document.querySelectorAll('.progress-step').forEach(s => {
-        s.classList.remove('active')
-      })
-      step.classList.add('active')
-    }
-    
-    // Update progress bar
-    if (progressFill) {
-      progressFill.style.width = `${progress}%`
-    }
-  }
-
-  completeStep(stepName) {
-    const step = document.querySelector(`[data-step="${stepName}"]`)
-    if (step) {
-      step.classList.remove('active')
-      step.classList.add('completed')
-    }
   }
 
   async delay(ms) {
