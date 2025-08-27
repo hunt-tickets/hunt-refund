@@ -1,6 +1,6 @@
 import './style.css'
 import { translations } from './translations.js'
-import { supabase } from './supabase.js'
+import { supabase as webhookClient } from './webhook.js'
 
 class RefundForm {
   constructor() {
@@ -588,8 +588,8 @@ class RefundForm {
       // Show progress loader
       this.showProgressLoader()
       
-      // Submit to Supabase
-      const result = await this.submitToSupabase(formData)
+      // Submit to Webhook
+      const result = await this.submitToWebhook(formData)
       
       // Hide progress loader and show success
       this.hideProgressLoader()
@@ -616,76 +616,100 @@ class RefundForm {
     }
   }
 
-  async submitToSupabase(formData) {
+  async submitToWebhook(formData) {
     try {
       // Step 1: Validating information
       this.updateProgress('validate', 10)
       await this.delay(800)
       
       // Generate UUID for this refund
-      const refundId = supabase.generateUUID()
+      const refundId = webhookClient.generateUUID()
       
-      // Format data for Supabase
-      const refundData = supabase.formatRefundData(formData, refundId)
+      // Format data for webhook
+      const refundData = webhookClient.formatRefundData(formData, refundId)
       
-      console.log('Submitting refund data:', refundData)
+      console.log('Preparing refund data:', refundData)
       this.completeStep('validate')
       
-      // Step 2: Storing information
-      this.updateProgress('save', 35)
-      await this.delay(1000)
-      
-      // Create refund record in Supabase
-      const refundRecord = await supabase.createRefund(refundData)
-      console.log('Refund created successfully:', refundRecord)
-      this.completeStep('save')
-      
-      // Step 3: Upload files if any
-      let uploadedFiles = []
+      // Step 2: Processing files
+      let processedFiles = []
       if (this.selectedFiles.length > 0) {
-        this.updateProgress('upload', 60)
+        this.updateProgress('upload', 35)
         await this.delay(500)
         
-        console.log('Uploading files to storage...')
-        uploadedFiles = await supabase.uploadFiles(refundId, this.selectedFiles)
-        console.log('Files uploaded successfully:', uploadedFiles)
+        console.log('Processing files...')
+        processedFiles = await this.processFilesForWebhook(this.selectedFiles)
+        console.log('Files processed successfully:', processedFiles.length)
         this.completeStep('upload')
         
-        // Step 4: Creating case number
-        this.updateProgress('notify', 85)
-      } else {
-        // Step 3: Creating case number (no files to upload)
+        // Step 3: Sending data
         this.updateProgress('notify', 70)
+      } else {
+        // Step 2: Sending data (no files to process)
+        this.updateProgress('notify', 50)
       }
       
       await this.delay(800)
       
-      // Prepare webhook data
+      // Prepare webhook data with all information
       const webhookData = {
-        refund: refundRecord,
-        attachments: uploadedFiles,
+        refund: refundData,
+        attachments: processedFiles,
         timestamp: new Date().toISOString(),
         source: 'refund-form'
       }
       
-      // Send webhook to Railway
-      console.log('Sending webhook to Railway...')
-      await supabase.sendWebhook(webhookData)
-      console.log('Webhook sent successfully')
+      // Send everything to webhook at once
+      console.log('Sending all data to webhook...')
+      await webhookClient.sendWebhook(webhookData)
+      console.log('Data sent successfully to webhook')
       
       this.completeStep('notify')
       this.updateProgress('complete', 100)
       await this.delay(500)
       
       return {
-        refund: refundRecord,
-        files: uploadedFiles
+        refund: refundData,
+        files: processedFiles
       }
       
     } catch (error) {
       console.error('Error in form submission:', error)
       throw error
     }
+  }
+
+  // Process files for webhook (convert to base64)
+  async processFilesForWebhook(files) {
+    const processedFiles = []
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      try {
+        const base64 = await this.fileToBase64(file)
+        processedFiles.push({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: base64
+        })
+      } catch (error) {
+        console.error(`Error processing file ${file.name}:`, error)
+        throw new Error(`No se pudo procesar el archivo ${file.name}`)
+      }
+    }
+    
+    return processedFiles
+  }
+
+  // Convert file to base64
+  fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result.split(',')[1]) // Remove data:type;base64, prefix
+      reader.onerror = error => reject(error)
+      reader.readAsDataURL(file)
+    })
   }
 
   // Progress loader methods
