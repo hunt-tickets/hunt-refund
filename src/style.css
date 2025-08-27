@@ -81,6 +81,24 @@ body {
   margin: 0;
   min-height: 100vh;
   background: var(--bg-primary);
+  /* Hide scrollbar for webkit browsers */
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar for webkit browsers (Chrome, Safari, Edge) */
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for IE and Edge legacy */
+body {
+  -ms-overflow-style: none;
 }
 
 #app {
@@ -136,9 +154,7 @@ body {
 }
 
 .intro-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: center;
   margin-bottom: 1rem;
 }
 
@@ -282,6 +298,14 @@ body {
   margin: 0;
   color: var(--text-secondary);
   font-size: 1rem;
+}
+
+.page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem 0;
 }
 
 .refund-form {
@@ -896,63 +920,82 @@ body {
 
 
 .case-number {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
+  margin-top: 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
 }
 
 .case-number strong {
   color: var(--text-secondary);
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .case-number span {
   color: var(--text-primary);
-  font-size: 1.1rem;
-  letter-spacing: 0.5px;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
+  display: block;
 }
 
 .success-message {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-primary);
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(21, 21, 21, 0.1);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  padding: 2.5rem;
-  margin: 1.5rem 0 2rem 0;
+  padding: 3rem 2.5rem;
+  margin: 2rem 0;
   color: var(--text-primary);
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3), 
     0 8px 16px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 10;
 }
 
 .success-icon {
   color: #22c55e;
-  flex-shrink: 0;
-  margin-top: 0.125rem;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1.5rem;
+  padding: 16px;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 50%;
+  border: 2px solid rgba(34, 197, 94, 0.2);
 }
 
 .success-message h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.125rem;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
   font-weight: 600;
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
 }
 
 .success-message p {
-  margin: 0;
+  margin: 0 0 1.5rem 0;
   color: var(--text-secondary);
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
+  font-size: 1rem;
+  max-width: 400px;
 }
 
 @media (max-width: 640px) {
@@ -977,19 +1020,8 @@ body {
     font-size: 1.75rem;
   }
   
-  .intro-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-  }
-  
-  .intro-header h3 {
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .header-controls {
+  .page-controls {
+    margin: 1rem 0 1.5rem 0;
     gap: 0.5rem;
   }
   
@@ -1014,6 +1046,34 @@ body {
   
   .bank-fields-grid .form-input {
     height: 48px;
+  }
+  
+  .success-message {
+    padding: 2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1rem;
+  }
+  
+  .success-message h3 {
+    font-size: 1.25rem;
+  }
+  
+  .success-message p {
+    font-size: 0.95rem;
+  }
+  
+  .case-number {
+    padding: 1rem;
+    max-width: 250px;
+  }
+  
+  .case-number span {
+    font-size: 1.125rem;
   }
 }
 

@@ -610,14 +610,23 @@ class RefundForm {
       this.hideProgressLoader()
       this.form.style.display = 'block'
       
-      // Show intro-section and header again on error
+      // Show intro-section, title, subtitle and controls again on error
       const introSection = document.querySelector('.intro-section')
-      const formHeader = document.querySelector('.form-header')
+      const headerTitle = document.querySelector('.form-header h1')
+      const headerSubtitle = document.querySelector('.form-header p')
+      const pageControls = document.querySelector('.page-controls')
+      
       if (introSection) {
         introSection.style.display = 'block'
       }
-      if (formHeader) {
-        formHeader.style.display = 'block'
+      if (headerTitle) {
+        headerTitle.style.display = 'block'
+      }
+      if (headerSubtitle) {
+        headerSubtitle.style.display = 'block'
+      }
+      if (pageControls) {
+        pageControls.style.display = 'flex'
       }
       
       this.showError('form', this.t('form-error'))
@@ -732,13 +741,23 @@ class RefundForm {
 
   showSuccess() {
     const introSection = document.querySelector('.intro-section')
-    const formHeader = document.querySelector('.form-header')
+    const headerTitle = document.querySelector('.form-header h1')
+    const headerSubtitle = document.querySelector('.form-header p')
+    const pageControls = document.querySelector('.page-controls')
+    
     if (introSection) {
       introSection.style.display = 'none'
     }
-    if (formHeader) {
-      formHeader.style.display = 'none'
+    if (headerTitle) {
+      headerTitle.style.display = 'none'
     }
+    if (headerSubtitle) {
+      headerSubtitle.style.display = 'none'
+    }
+    if (pageControls) {
+      pageControls.style.display = 'none'
+    }
+    
     this.successMessage.style.display = 'flex'
     this.successMessage.scrollIntoView({ behavior: 'smooth' })
   }
