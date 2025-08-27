@@ -104,9 +104,16 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 1;
   overflow: hidden;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #fd79a8);
+  background: linear-gradient(45deg, 
+    rgba(255, 107, 107, 0.7), 
+    rgba(78, 205, 196, 0.7), 
+    rgba(69, 183, 209, 0.7), 
+    rgba(150, 206, 180, 0.7), 
+    rgba(255, 234, 167, 0.7), 
+    rgba(253, 121, 168, 0.7)
+  );
   background-size: 400% 400%;
   animation: gradientShift 8s ease infinite;
 }
@@ -284,9 +291,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 2.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3), 
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
   position: relative;
-  z-index: 1;
+  z-index: 10;
 }
 
 .form-group {
