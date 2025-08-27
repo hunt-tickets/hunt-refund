@@ -2,11 +2,9 @@
 class WebhookClient {
   constructor() {
     this.webhookUrl = import.meta.env.VITE_WEBHOOK_URL
-    this.webhookUser = import.meta.env.VITE_WEBHOOK_USER
-    this.webhookPassword = import.meta.env.VITE_WEBHOOK_PASSWORD
     
-    if (!this.webhookUrl || !this.webhookUser || !this.webhookPassword) {
-      console.error('Webhook configuration is missing. Please check your environment variables.')
+    if (!this.webhookUrl) {
+      console.error('Webhook URL is missing. Please check your environment variables.')
     }
   }
 
@@ -25,14 +23,10 @@ class WebhookClient {
   // Send webhook with form data
   async sendWebhook(data) {
     try {
-      // Create basic auth header
-      const credentials = btoa(`${this.webhookUser}:${this.webhookPassword}`)
-      
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${credentials}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       })

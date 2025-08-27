@@ -5,7 +5,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
-        accept: 'accept.html',
         error: 'error.html'
       }
     }
