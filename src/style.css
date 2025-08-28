@@ -22,17 +22,17 @@
 }
 
 :root[data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-tertiary: #e9ecef;
-  --bg-quaternary: #dee2e6;
-  --text-primary: #212529;
-  --text-secondary: #495057;
+  --bg-primary: #fafaf9;
+  --bg-secondary: #f5f5f4;
+  --bg-tertiary: #e7e5e4;
+  --bg-quaternary: #d6d3d1;
+  --text-primary: #1c1917;
+  --text-secondary: #44403c;
   --text-muted: #6c757d;
   --text-subtle: #868e96;
-  --border-primary: #dee2e6;
-  --border-secondary: #e9ecef;
-  --border-tertiary: #ced4da;
+  --border-primary: #e7e5e4;
+  --border-secondary: #f5f5f4;
+  --border-tertiary: #d6d3d1;
   --accent-primary: #6c757d;
   --accent-primary-hover: #5a6268;
   --accent-secondary: #343a40;
@@ -42,14 +42,14 @@
   --error: #dc3545;
   --error-bg: #f8d7da;
   --warning: #ffc107;
-  --input-bg: rgba(255, 255, 255, 0.9);
+  --input-bg: rgba(250, 250, 249, 0.9);
   --input-border: rgba(0, 0, 0, 0.15);
   --input-focus-border: #6c757d;
-  --input-focus-bg: #ffffff;
+  --input-focus-bg: #fafaf9;
   --checkbox-bg: rgba(0, 0, 0, 0.05);
   --checkbox-border: rgba(0, 0, 0, 0.2);
-  --checkbox-checked-bg: #ffffff;
-  --checkbox-checked-border: #ffffff;
+  --checkbox-checked-bg: #fafaf9;
+  --checkbox-checked-border: #fafaf9;
 }
 
 :root {  
@@ -169,6 +169,60 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.contact-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 10px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.contact-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+.contact-icon {
+  flex-shrink: 0;
+}
+
+.policy-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 10px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.policy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+.policy-icon {
+  flex-shrink: 0;
 }
 
 .theme-toggle {
@@ -428,7 +482,7 @@ body {
 
 .form-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 150px;
 }
 
 .input-with-prefix {
@@ -781,13 +835,13 @@ body {
 }
 
 .policy-link {
-  color: var(--accent-primary);
+  color: var(--text-muted);
   text-decoration: underline;
   transition: color 0.2s ease;
 }
 
 .policy-link:hover {
-  color: var(--accent-primary-hover);
+  color: var(--text-secondary);
 }
 
 
@@ -823,7 +877,7 @@ body {
 [data-theme="light"] .btn-primary {
   background: var(--text-primary);
   color: var(--bg-primary);
-  box-shadow: 0 4px 16px rgba(33, 37, 41, 0.15);
+  box-shadow: 0 4px 16px rgba(28, 25, 23, 0.15);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -834,7 +888,7 @@ body {
 
 [data-theme="light"] .btn-primary:hover:not(:disabled) {
   background: var(--text-secondary);
-  box-shadow: 0 8px 24px rgba(33, 37, 41, 0.2);
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.2);
 }
 
 .btn-primary:disabled {
@@ -889,10 +943,14 @@ body {
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid var(--border-primary);
   border-radius: 16px;
-  margin-top: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
 }
 
 .loader-container {
@@ -929,7 +987,7 @@ body {
 
 
 .case-number {
-  margin-top: 0;
+  margin: 1.5rem auto 0 auto;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -937,7 +995,7 @@ body {
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   text-align: center;
   width: 100%;
-  max-width: 300px;
+  max-width: 280px;
 }
 
 .case-number strong {
@@ -969,14 +1027,18 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 3rem 2.5rem;
-  margin: 2rem 0;
   color: var(--text-primary);
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3), 
     0 8px 16px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.05);
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
 }
 
 .success-icon {
@@ -1007,6 +1069,25 @@ body {
   max-width: 400px;
 }
 
+.success-list {
+  margin: 0 0 1.5rem 0;
+  padding: 0 0 0 1.5rem;
+  color: var(--text-secondary);
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 400px;
+  text-align: left;
+}
+
+.success-list li {
+  margin-bottom: 0.75rem;
+}
+
+.success-list li:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .container {
     padding: 0;
@@ -1033,6 +1114,24 @@ body {
   .page-controls {
     margin: 1rem 0 1.5rem 0;
     gap: 0.5rem;
+  }
+  
+  .contact-btn {
+    padding: 0 0.6rem;
+    font-size: 0.8rem;
+  }
+  
+  .contact-text {
+    display: none;
+  }
+  
+  .policy-btn {
+    padding: 0 0.6rem;
+    font-size: 0.8rem;
+  }
+  
+  .policy-text {
+    display: none;
   }
   
   
@@ -1077,13 +1176,52 @@ body {
     font-size: 0.95rem;
   }
   
+  .success-list {
+    font-size: 0.95rem;
+    padding-left: 1.25rem;
+  }
+  
   .case-number {
     padding: 1rem;
-    max-width: 250px;
+    max-width: 260px;
+    margin: 1.25rem auto 0 auto;
   }
   
   .case-number span {
     font-size: 1.125rem;
+  }
+}
+
+/* Powered by footer */
+.powered-by-footer {
+  margin-top: 2rem;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.powered-by-text {
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.powered-by-text strong {
+  color: var(--text-subtle);
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .powered-by-footer {
+    margin-top: 1.5rem;
+    padding: 0.75rem 0;
+  }
+  
+  .powered-by-text {
+    font-size: 0.7rem;
   }
 }
 

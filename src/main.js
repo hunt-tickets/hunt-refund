@@ -6,13 +6,9 @@ class RefundForm {
   constructor() {
     this.form = document.getElementById('refund-form')
     this.submitBtn = document.getElementById('submit-btn')
-    this.fileInput = document.getElementById('attachments')
-    this.fileList = document.getElementById('file-list')
-    this.fileInputDisplay = document.querySelector('.file-input-display .file-text')
     this.successMessage = document.getElementById('success-message')
     this.progressLoader = document.getElementById('progress-loader')
-    this.selectedFiles = []
-    this.currentLang = 'es'
+    this.currentLang = this.getInitialLanguage() // Auto-detect language
     this.lastSubmissionTime = 0
     this.submissionAttempts = 0
     this.maxAttemptsPerMinute = 5
@@ -22,9 +18,10 @@ class RefundForm {
 
   init() {
     this.setupEventListeners()
-    this.setupFileUpload()
     this.setupLanguageToggle()
+    this.applyInitialLanguage() // Apply detected/URL language
     this.preloadDataFromUrl()
+    this.applyUIConfig()
   }
 
   // Función para leer parámetros de la URL
@@ -52,6 +49,159 @@ class RefundForm {
       'correo': 'email',
       'orden': 'orderNumber',
       'order': 'orderNumber'
+    }
+  }
+
+  // Configuración de UI basada en parámetros URL
+  getUIConfig() {
+    const urlParams = this.getUrlParams()
+    
+    // Validar parámetro de logo de forma segura
+    let showLogo = true // Default
+    const logoParam = (urlParams.showLogo || urlParams.logo || '').toLowerCase().trim()
+    
+    if (logoParam === 'false' || logoParam === '0' || logoParam === 'no') {
+      showLogo = false
+    }
+    
+    // Validar parámetro de estado para testing
+    let state = null // Default (normal form)
+    const stateParam = (urlParams.state || '').toLowerCase().trim()
+    
+    if (stateParam === 'success' || stateParam === 'loading' || stateParam === 'error') {
+      state = stateParam
+    }
+    
+    // Parámetro para número de caso (solo para testing de estado success)
+    const caseNumber = urlParams.caseNumber || 'TEST-12345'
+    
+    // Validar event_id UUID
+    let eventId = null
+    if (urlParams.event_id || urlParams.eventId) {
+      const id = urlParams.event_id || urlParams.eventId
+      // Validar formato UUID básico
+      if (this.isValidUUID(id)) {
+        eventId = id
+      } else {
+        console.warn('Invalid event_id format:', id)
+      }
+    }
+    
+    // Validar parámetro de tema
+    let theme = null // Default (no change)
+    const themeParam = (urlParams.theme || '').toLowerCase().trim()
+    
+    if (themeParam === 'black' || themeParam === 'dark') {
+      theme = 'dark'
+    } else if (themeParam === 'white' || themeParam === 'light') {
+      theme = 'light'
+    } else if (themeParam === 'system' || themeParam === 'auto') {
+      theme = 'system'
+    }
+    
+    // Validar parámetro de strip colorido
+    let showStrip = true // Default
+    const stripParam = (urlParams.showStrip || urlParams.strip || '').toLowerCase().trim()
+    
+    if (stripParam === 'false' || stripParam === '0' || stripParam === 'no') {
+      showStrip = false
+    }
+    
+    // Validar parámetro de idioma
+    let language = null // Default (will be auto-detected)
+    const langParam = (urlParams.lang || urlParams.language || '').toLowerCase().trim()
+    
+    if (langParam === 'es' || langParam === 'spanish' || langParam === 'español') {
+      language = 'es'
+    } else if (langParam === 'en' || langParam === 'english') {
+      language = 'en'
+    }
+    
+    return {
+      showLogo: showLogo,
+      state: state,
+      caseNumber: caseNumber,
+      eventId: eventId,
+      theme: theme,
+      showStrip: showStrip,
+      language: language
+    }
+  }
+  
+  // Validar formato UUID básico
+  isValidUUID(uuid) {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    return uuidRegex.test(uuid)
+  }
+  
+  // Detectar idioma del navegador
+  detectBrowserLanguage() {
+    // Obtener idiomas preferidos del navegador
+    const browserLangs = navigator.languages || [navigator.language || navigator.userLanguage || 'en']
+    
+    for (const lang of browserLangs) {
+      const langCode = lang.split('-')[0].toLowerCase() // Extraer código de idioma base
+      
+      // Verificar si es español
+      if (langCode === 'es') {
+        return 'es'
+      }
+      // Verificar si es inglés
+      if (langCode === 'en') {
+        return 'en'
+      }
+    }
+    
+    // Fallback a inglés si no es español ni inglés
+    return 'en'
+  }
+  
+  // Obtener idioma inicial (URL > navegador)
+  getInitialLanguage() {
+    const config = this.getUIConfig()
+    
+    // Si hay idioma en URL, usarlo
+    if (config.language) {
+      console.info('Idioma configurado desde URL:', config.language)
+      return config.language
+    }
+    
+    // Si no, detectar del navegador
+    const browserLang = this.detectBrowserLanguage()
+    console.info('Idioma detectado del navegador:', browserLang)
+    return browserLang
+  }
+  
+  // Aplicar idioma inicial y actualizar toggle
+  applyInitialLanguage() {
+    // Aplicar traducciones
+    this.switchLanguage(this.currentLang)
+    
+    // Actualizar el toggle visual para reflejar el idioma actual
+    this.updateLanguageToggle(this.currentLang)
+  }
+  
+  // Actualizar el toggle de idioma visual
+  updateLanguageToggle(lang) {
+    const toggle = document.querySelector('.language-toggle')
+    const buttons = document.querySelectorAll('.lang-btn')
+    
+    // Remover clase activa de todos los botones
+    buttons.forEach(btn => btn.classList.remove('active'))
+    
+    // Agregar clase activa al botón correcto
+    const activeBtn = document.querySelector(`[data-lang="${lang}"]`)
+    if (activeBtn) {
+      activeBtn.classList.add('active')
+    }
+    
+    // Actualizar posición del toggle
+    if (toggle) {
+      if (lang === 'en') {
+        toggle.classList.add('en')
+      } else {
+        toggle.classList.remove('en')
+      }
     }
   }
 
@@ -99,6 +249,210 @@ class RefundForm {
     field.value = sanitizedValue
     
     console.info(`Campo precargado: ${fieldName} = ${sanitizedValue}`)
+  }
+
+  // Función para aplicar configuración de UI basada en parámetros URL
+  applyUIConfig() {
+    const config = this.getUIConfig()
+    
+    // Controlar visibilidad del logo
+    const logo = document.querySelector('.form-logo')
+    if (logo) {
+      if (config.showLogo) {
+        logo.style.display = 'block'
+      } else {
+        logo.style.display = 'none'
+      }
+    }
+    
+    // Controlar visibilidad del strip colorido
+    const strip = document.querySelector('.stripe-section')
+    if (strip) {
+      if (config.showStrip) {
+        strip.style.display = 'block'
+      } else {
+        strip.style.display = 'none'
+      }
+    }
+    
+    // Aplicar tema si se especifica
+    if (config.theme) {
+      this.applyTheme(config.theme)
+    }
+    
+    // Aplicar estado para testing/debugging
+    if (config.state) {
+      setTimeout(() => {
+        this.applyTestState(config.state, config.caseNumber)
+      }, 500) // Pequeño delay para que se cargue la página
+    }
+    
+    console.info('UI Config aplicada:', config)
+  }
+  
+  // Aplicar tema basado en parámetro URL
+  applyTheme(theme) {
+    const documentElement = document.documentElement
+    
+    switch (theme) {
+      case 'dark':
+        documentElement.setAttribute('data-theme', 'dark')
+        localStorage.setItem('theme', 'dark')
+        break
+      case 'light':
+        documentElement.setAttribute('data-theme', 'light')
+        localStorage.setItem('theme', 'light')
+        break
+      case 'system':
+        // Detectar preferencia del sistema
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const systemTheme = prefersDark ? 'dark' : 'light'
+        documentElement.setAttribute('data-theme', systemTheme)
+        localStorage.setItem('theme', systemTheme)
+        
+        // Escuchar cambios en la preferencia del sistema
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        mediaQuery.addListener((e) => {
+          const newTheme = e.matches ? 'dark' : 'light'
+          documentElement.setAttribute('data-theme', newTheme)
+          localStorage.setItem('theme', newTheme)
+        })
+        break
+    }
+    
+    console.info(`Tema aplicado desde URL: ${theme}`)
+  }
+  
+  // Función para aplicar estados de testing
+  applyTestState(state, caseNumber) {
+    switch (state) {
+      case 'loading':
+        this.showProgressLoader()
+        break
+      case 'success':
+        // Mostrar mensaje de éxito con número de caso
+        const caseNumberDisplay = document.getElementById('case-number-display')
+        if (caseNumberDisplay) {
+          caseNumberDisplay.textContent = caseNumber
+        }
+        this.showSuccess()
+        break
+      case 'error':
+        // Mostrar mensaje de error más visible para testing
+        this.showTestError('Error de prueba: Este es un mensaje de error para testing')
+        break
+    }
+    
+    console.info(`Estado de testing aplicado: ${state}`)
+  }
+  
+  // Función para mostrar error de testing más visible
+  showTestError(message) {
+    const config = this.getUIConfig()
+    
+    // Mostrar/ocultar header elements basado en configuración
+    const header = document.querySelector('.form-header')
+    const controls = document.querySelector('.page-controls')
+    
+    if (header) {
+      header.style.display = 'block'
+    }
+    if (controls) {
+      controls.style.display = 'flex'
+    }
+    
+    // Ocultar elementos del formulario
+    const form = document.getElementById('refund-form')
+    const intro = document.querySelector('.intro-section')
+    
+    if (form) form.style.display = 'none'
+    if (intro) intro.style.display = 'none'
+    
+    // Crear un elemento de error mejorado
+    const errorContainer = document.createElement('div')
+    errorContainer.id = 'test-error-message'
+    errorContainer.className = 'error-message-container'
+    errorContainer.style.cssText = `
+      background: rgba(21, 21, 21, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      color: var(--text-primary);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      text-align: center;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      width: 90%;
+      max-width: 400px;
+    `
+    
+    errorContainer.innerHTML = `
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="margin-bottom: 1.5rem; padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; border: 2px solid rgba(239, 68, 68, 0.2);">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+      <div>
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 600; color: var(--text-primary); font-family: 'Source Sans 3', sans-serif;" data-es="Error al Procesar" data-en="Processing Error">Error al Procesar</h3>
+        <p style="margin: 0 0 2rem 0; color: var(--text-secondary); line-height: 1.6; font-size: 1rem; max-width: 400px; margin-left: auto; margin-right: auto; font-family: 'Source Sans 3', sans-serif;" data-es="Ha ocurrido un error al procesar su solicitud de reembolso. Por favor, verifique su información e inténtelo nuevamente. Si el problema persiste, contacte a nuestro equipo de soporte." data-en="An error occurred while processing your refund request. Please check your information and try again. If the problem persists, contact our support team.">Ha ocurrido un error al procesar su solicitud de reembolso. Por favor, verifique su información e inténtelo nuevamente. Si el problema persiste, contacte a nuestro equipo de soporte.</p>
+        <button type="button" id="restart-form-btn" style="
+          background: #ffffff;
+          color: var(--bg-primary);
+          border: none;
+          border-radius: 8px;
+          padding: 0.875rem 2rem;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          min-height: 48px;
+          font-family: 'Source Sans 3', sans-serif;
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+        " 
+        onmouseover="this.style.background='#f0f0f0'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(255, 255, 255, 0.15)'"
+        onmouseout="this.style.background='#ffffff'; this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 16px rgba(255, 255, 255, 0.1)'"
+        data-es="Intentar de Nuevo" data-en="Try Again">Intentar de Nuevo</button>
+      </div>
+    `
+    
+    // Agregar event listener al botón
+    const restartBtn = errorContainer.querySelector('#restart-form-btn')
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        // Remover el mensaje de error
+        errorContainer.remove()
+        
+        // Mostrar elementos del formulario nuevamente
+        if (form) form.style.display = 'block'
+        if (intro) intro.style.display = 'block'
+        
+        // Limpiar formulario
+        this.resetForm()
+      })
+    }
+    
+    // Agregar al DOM
+    document.querySelector('.container').appendChild(errorContainer)
+    
+    // Aplicar traducciones si es necesario
+    if (this.currentLang === 'en') {
+      this.updateErrorTranslations(errorContainer)
+    }
+  }
+  
+  // Helper para actualizar traducciones del error
+  updateErrorTranslations(container) {
+    container.querySelectorAll('[data-es][data-en]').forEach(element => {
+      const text = element.getAttribute('data-en')
+      if (text) {
+        element.textContent = text
+      }
+    })
   }
 
   // Security: Sanitize input to prevent XSS attacks
@@ -290,127 +644,12 @@ class RefundForm {
   }
 
 
-  setupFileUpload() {
-    this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e))
-    
-    const fileInputWrapper = document.querySelector('.file-input-wrapper')
-    
-    fileInputWrapper.addEventListener('dragover', (e) => {
-      e.preventDefault()
-      fileInputWrapper.classList.add('dragover')
-    })
-    
-    fileInputWrapper.addEventListener('dragleave', () => {
-      fileInputWrapper.classList.remove('dragover')
-    })
-    
-    fileInputWrapper.addEventListener('drop', (e) => {
-      e.preventDefault()
-      fileInputWrapper.classList.remove('dragover')
-      this.handleFileSelect({ target: { files: e.dataTransfer.files } })
-    })
-  }
 
-  handleFileSelect(e) {
-    const files = Array.from(e.target.files)
-    
-    files.forEach(file => {
-      if (this.validateFile(file)) {
-        this.selectedFiles.push(file)
-      }
-    })
-    
-    this.updateFileDisplay()
-    this.updateFileInputText()
-  }
 
-  validateFile(file) {
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.pdf', '.doc', '.docx']
-    
-    // Security: Sanitize filename to prevent path traversal
-    const sanitizedName = this.sanitizeInput(file.name)
-    const fileExtension = sanitizedName.toLowerCase().substring(sanitizedName.lastIndexOf('.'))
-    
-    // Security: Check for suspicious filenames
-    if (file.name.includes('..') || file.name.includes('/') || file.name.includes('\\')) {
-      this.logSecurityEvent('file', file.name, 'Suspicious filename with path characters')
-      this.showError('attachments', `"${sanitizedName}" contiene caracteres no permitidos`)
-      return false
-    }
-    
-    // Security: Validate file size
-    if (file.size > maxSize) {
-      this.showError('attachments', `"${sanitizedName}" ${this.t('file-too-large')}`)
-      return false
-    }
-    
-    // Security: Double-check MIME type and extension
-    if (!allowedTypes.includes(file.type) || !allowedExtensions.includes(fileExtension)) {
-      this.logSecurityEvent('file', file.name, `Invalid file type: ${file.type}, extension: ${fileExtension}`)
-      this.showError('attachments', `"${sanitizedName}" ${this.t('file-type-error')}`)
-      return false
-    }
-    
-    // Security: Additional checks for executable files disguised as documents
-    const executableExtensions = ['.exe', '.bat', '.cmd', '.scr', '.pif', '.com', '.jar', '.js', '.vbs', '.ps1']
-    if (executableExtensions.some(ext => sanitizedName.toLowerCase().includes(ext))) {
-      this.logSecurityEvent('file', file.name, 'Executable file detected')
-      this.showError('attachments', `"${sanitizedName}" tipo de archivo no permitido por seguridad`)
-      return false
-    }
-    
-    return true
-  }
 
-  updateFileDisplay() {
-    this.fileList.innerHTML = ''
-    
-    this.selectedFiles.forEach((file, index) => {
-      const fileItem = document.createElement('div')
-      fileItem.className = 'file-item'
-      
-      // Security: Sanitize filename before displaying
-      const sanitizedFileName = this.sanitizeInput(file.name)
-      
-      fileItem.innerHTML = `
-        <span class="file-name">${sanitizedFileName}</span>
-        <span class="file-size">${this.formatFileSize(file.size)}</span>
-        <button type="button" class="file-remove" data-index="${index}">✕</button>
-      `
-      
-      const removeBtn = fileItem.querySelector('.file-remove')
-      removeBtn.addEventListener('click', () => this.removeFile(index))
-      
-      this.fileList.appendChild(fileItem)
-    })
-  }
 
-  updateFileInputText() {
-    const count = this.selectedFiles.length
-    if (count === 0) {
-      this.fileInputDisplay.textContent = this.t('select-files')
-    } else if (count === 1) {
-      this.fileInputDisplay.textContent = `1 ${this.t('file-selected')}`
-    } else {
-      this.fileInputDisplay.textContent = `${count} ${this.t('files-selected')}`
-    }
-  }
 
-  removeFile(index) {
-    this.selectedFiles.splice(index, 1)
-    this.updateFileDisplay()
-    this.updateFileInputText()
-  }
 
-  formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
-  }
 
   validateField(field) {
     const rawValue = field.value.trim()
@@ -576,16 +815,11 @@ class RefundForm {
         }
       }
       
-      // Security: Add sanitized files
-      this.selectedFiles.forEach(file => {
-        formData.append('attachments', file)
-      })
       
       // Log submission attempt
       console.info('Form submission attempt', {
         timestamp: new Date().toISOString(),
-        fields: Array.from(formData.keys()),
-        fileCount: this.selectedFiles.length
+        fields: Array.from(formData.keys())
       })
       
       // Submit to Webhook
@@ -644,20 +878,21 @@ class RefundForm {
       const refundData = webhookClient.formatRefundData(formData, refundId)
       console.log('Preparing refund data:', refundData)
       
-      // Process files if any
-      let processedFiles = []
-      if (this.selectedFiles.length > 0) {
-        console.log('Processing files...')
-        processedFiles = await this.processFilesForWebhook(this.selectedFiles)
-        console.log('Files processed successfully:', processedFiles.length)
-      }
+      
+      // Get event_id from URL if available
+      const config = this.getUIConfig()
       
       // Prepare webhook data with all information
       const webhookData = {
         refund: refundData,
-        attachments: processedFiles,
         timestamp: new Date().toISOString(),
         source: 'refund-form'
+      }
+      
+      // Add event_id if provided in URL
+      if (config.eventId) {
+        webhookData.event_id = config.eventId
+        console.log('Including event_id in webhook:', config.eventId)
       }
       
       // Send everything to webhook at once
@@ -667,7 +902,6 @@ class RefundForm {
       
       return {
         refund: refundData,
-        files: processedFiles,
         caseNumber: caseNumber
       }
       
@@ -677,38 +911,7 @@ class RefundForm {
     }
   }
 
-  // Process files for webhook (convert to base64)
-  async processFilesForWebhook(files) {
-    const processedFiles = []
-    
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      try {
-        const base64 = await this.fileToBase64(file)
-        processedFiles.push({
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          data: base64
-        })
-      } catch (error) {
-        console.error(`Error processing file ${file.name}:`, error)
-        throw new Error(`No se pudo procesar el archivo ${file.name}`)
-      }
-    }
-    
-    return processedFiles
-  }
 
-  // Convert file to base64
-  fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result.split(',')[1]) // Remove data:type;base64, prefix
-      reader.onerror = error => reject(error)
-      reader.readAsDataURL(file)
-    })
-  }
 
   // Simple loader methods
   showProgressLoader() {
@@ -744,18 +947,25 @@ class RefundForm {
     const headerTitle = document.querySelector('.form-header h1')
     const headerSubtitle = document.querySelector('.form-header p')
     const pageControls = document.querySelector('.page-controls')
+    const form = document.getElementById('refund-form')
     
+    // Hide form and intro section
     if (introSection) {
       introSection.style.display = 'none'
     }
+    if (form) {
+      form.style.display = 'none'
+    }
+    
+    // Keep header title and subtitle visible
     if (headerTitle) {
-      headerTitle.style.display = 'none'
+      headerTitle.style.display = 'block'
     }
     if (headerSubtitle) {
-      headerSubtitle.style.display = 'none'
+      headerSubtitle.style.display = 'block'
     }
     if (pageControls) {
-      pageControls.style.display = 'none'
+      pageControls.style.display = 'flex'
     }
     
     this.successMessage.style.display = 'flex'
@@ -764,10 +974,6 @@ class RefundForm {
 
   resetForm() {
     this.form.reset()
-    this.selectedFiles = []
-    this.updateFileDisplay()
-    this.updateFileInputText()
-    
     
     const errorMessages = this.form.querySelectorAll('.error-message.show')
     errorMessages.forEach(error => error.classList.remove('show'))
@@ -787,6 +993,36 @@ class RefundForm {
         }
       })
     })
+    
+    // Setup contact button
+    const contactBtn = document.getElementById('contact-btn')
+    if (contactBtn) {
+      contactBtn.addEventListener('click', () => {
+        this.handleContactClick()
+      })
+    }
+    
+    // Setup policy button
+    const policyBtn = document.getElementById('policy-btn')
+    if (policyBtn) {
+      policyBtn.addEventListener('click', () => {
+        this.handlePolicyClick()
+      })
+    }
+  }
+  
+  // Handle contact button click
+  handleContactClick() {
+    // You can customize this URL or add URL parameter support
+    const contactUrl = 'https://www.hunt-tickets.com/contact'
+    window.open(contactUrl, '_blank', 'noopener,noreferrer')
+  }
+  
+  // Handle policy button click
+  handlePolicyClick() {
+    // You can customize this URL or add URL parameter support
+    const policyUrl = 'https://www.hunt-tickets.com/resources/refund-policy'
+    window.open(policyUrl, '_blank', 'noopener,noreferrer')
   }
 
   switchLanguage(lang) {
@@ -832,8 +1068,6 @@ class RefundForm {
       }
     })
     
-    // Update file input text
-    this.updateFileInputText()
   }
 
   t(key) {
