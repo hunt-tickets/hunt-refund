@@ -17,6 +17,11 @@ class RefundForm {
   }
 
   init() {
+    // Check access restrictions first
+    if (!this.validateAccess()) {
+      return // Stop initialization if access is denied
+    }
+    
     this.setupEventListeners()
     this.setupLanguageToggle()
     this.applyInitialLanguage() // Apply detected/URL language
@@ -107,6 +112,18 @@ class RefundForm {
       showStrip = false
     }
     
+    // Validar parámetro de color sólido para el strip
+    let stripColor = null // Default (gradient animation)
+    if (urlParams.stripColor || urlParams.strip_color) {
+      const colorParam = (urlParams.stripColor || urlParams.strip_color).trim()
+      // Validar formato hex (#rrggbb o #rgb)
+      if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(colorParam)) {
+        stripColor = colorParam
+      } else {
+        console.warn('Invalid strip color format:', colorParam)
+      }
+    }
+    
     // Validar parámetro de idioma
     let language = null // Default (will be auto-detected)
     const langParam = (urlParams.lang || urlParams.language || '').toLowerCase().trim()
@@ -117,6 +134,49 @@ class RefundForm {
       language = 'en'
     }
     
+    // Validar parámetro de expiración (timestamp o minutos)
+    let expiration = null
+    if (urlParams.expires || urlParams.expiration) {
+      const expiresParam = urlParams.expires || urlParams.expiration
+      
+      // Si es un número, tratarlo como timestamp
+      if (!isNaN(expiresParam)) {
+        const timestamp = parseInt(expiresParam)
+        // Si es menor a 946684800 (año 2000), tratarlo como minutos desde ahora
+        if (timestamp < 946684800) {
+          expiration = Date.now() + (timestamp * 60 * 1000)
+        } else {
+          // Si es mayor, tratarlo como timestamp Unix (segundos)
+          expiration = timestamp * 1000
+        }
+      }
+    }
+    
+    // Validar parámetro de máximo de accesos
+    let maxAccess = null
+    if (urlParams.maxAccess || urlParams.max_access) {
+      const maxParam = parseInt(urlParams.maxAccess || urlParams.max_access)
+      if (!isNaN(maxParam) && maxParam > 0) {
+        maxAccess = maxParam
+      }
+    }
+    
+    // Validar parámetro de botón de contacto
+    let showContact = true // Default
+    const contactParam = (urlParams.showContact || urlParams.contact || '').toLowerCase().trim()
+    
+    if (contactParam === 'false' || contactParam === '0' || contactParam === 'no') {
+      showContact = false
+    }
+    
+    // Validar parámetro de botón de política
+    let showPolicy = true // Default
+    const policyParam = (urlParams.showPolicy || urlParams.policy || '').toLowerCase().trim()
+    
+    if (policyParam === 'false' || policyParam === '0' || policyParam === 'no') {
+      showPolicy = false
+    }
+    
     return {
       showLogo: showLogo,
       state: state,
@@ -124,7 +184,12 @@ class RefundForm {
       eventId: eventId,
       theme: theme,
       showStrip: showStrip,
-      language: language
+      stripColor: stripColor,
+      language: language,
+      expiration: expiration,
+      maxAccess: maxAccess,
+      showContact: showContact,
+      showPolicy: showPolicy
     }
   }
   
@@ -170,6 +235,126 @@ class RefundForm {
     const browserLang = this.detectBrowserLanguage()
     console.info('Idioma detectado del navegador:', browserLang)
     return browserLang
+  }
+  
+  // Validar acceso basado en expiración y límites
+  validateAccess() {
+    const config = this.getUIConfig()
+    
+    // Validar expiración
+    if (config.expiration) {
+      if (Date.now() > config.expiration) {
+        this.showAccessDenied('expired')
+        return false
+      }
+    }
+    
+    // Validar límite de accesos
+    if (config.maxAccess) {
+      const accessCount = this.getAccessCount()
+      if (accessCount >= config.maxAccess) {
+        this.showAccessDenied('max-access-reached')
+        return false
+      }
+      
+      // Incrementar contador de accesos
+      this.incrementAccessCount()
+    }
+    
+    return true
+  }
+  
+  // Obtener contador de accesos del localStorage
+  getAccessCount() {
+    const urlHash = this.getUrlHash()
+    const storageKey = `access_count_${urlHash}`
+    return parseInt(localStorage.getItem(storageKey) || '0')
+  }
+  
+  // Incrementar contador de accesos
+  incrementAccessCount() {
+    const urlHash = this.getUrlHash()
+    const storageKey = `access_count_${urlHash}`
+    const currentCount = this.getAccessCount()
+    localStorage.setItem(storageKey, (currentCount + 1).toString())
+  }
+  
+  // Generar hash único de la URL para tracking
+  getUrlHash() {
+    const url = window.location.href
+    let hash = 0
+    for (let i = 0; i < url.length; i++) {
+      const char = url.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // Convert to 32-bit integer
+    }
+    return Math.abs(hash).toString(36)
+  }
+  
+  // Mostrar mensaje de acceso denegado
+  showAccessDenied(reason) {
+    // Ocultar todos los elementos normales
+    const form = document.getElementById('refund-form')
+    const intro = document.querySelector('.intro-section')
+    const header = document.querySelector('.form-header')
+    const controls = document.querySelector('.page-controls')
+    
+    if (form) form.style.display = 'none'
+    if (intro) intro.style.display = 'none'
+    if (header) header.style.display = 'none'
+    if (controls) controls.style.display = 'none'
+    
+    // Crear mensaje de acceso denegado
+    const deniedContainer = document.createElement('div')
+    deniedContainer.className = 'access-denied-container'
+    deniedContainer.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      background: rgba(21, 21, 21, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      color: var(--text-primary);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    `
+    
+    let title, message
+    if (reason === 'expired') {
+      title = { es: 'Enlace Expirado', en: 'Link Expired' }
+      message = { 
+        es: 'Este enlace ha expirado y ya no está disponible. Por favor, solicite un nuevo enlace.',
+        en: 'This link has expired and is no longer available. Please request a new link.'
+      }
+    } else if (reason === 'max-access-reached') {
+      title = { es: 'Acceso Limitado', en: 'Access Limited' }
+      message = { 
+        es: 'Este enlace ha alcanzado el número máximo de accesos permitidos.',
+        en: 'This link has reached the maximum number of allowed accesses.'
+      }
+    }
+    
+    const currentLang = this.detectBrowserLanguage()
+    
+    deniedContainer.innerHTML = `
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="margin-bottom: 1.5rem; padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; border: 2px solid rgba(239, 68, 68, 0.2);">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+      <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 600; color: var(--text-primary);">${title[currentLang]}</h3>
+      <p style="margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 1rem;">${message[currentLang]}</p>
+    `
+    
+    document.querySelector('.container').appendChild(deniedContainer)
+    console.warn(`Access denied: ${reason}`)
   }
   
   // Aplicar idioma inicial y actualizar toggle
@@ -270,8 +455,55 @@ class RefundForm {
     if (strip) {
       if (config.showStrip) {
         strip.style.display = 'block'
+        
+        // Aplicar color sólido si se especifica
+        if (config.stripColor) {
+          // Crear una clase CSS dinámica para sobreescribir los estilos
+          const styleId = 'dynamic-strip-style'
+          let styleElement = document.getElementById(styleId)
+          
+          if (!styleElement) {
+            styleElement = document.createElement('style')
+            styleElement.id = styleId
+            document.head.appendChild(styleElement)
+          }
+          
+          styleElement.textContent = `
+            .stripe-section {
+              background: ${config.stripColor} !important;
+              animation: none !important;
+            }
+          `
+          console.info(`Strip color aplicado: ${config.stripColor}`)
+        } else {
+          // Remover estilo dinámico si existe
+          const styleElement = document.getElementById('dynamic-strip-style')
+          if (styleElement) {
+            styleElement.remove()
+          }
+        }
       } else {
         strip.style.display = 'none'
+      }
+    }
+    
+    // Controlar visibilidad del botón de contacto
+    const contactBtn = document.getElementById('contact-btn')
+    if (contactBtn) {
+      if (config.showContact) {
+        contactBtn.style.display = 'flex'
+      } else {
+        contactBtn.style.display = 'none'
+      }
+    }
+    
+    // Controlar visibilidad del botón de política
+    const policyBtn = document.getElementById('policy-btn')
+    if (policyBtn) {
+      if (config.showPolicy) {
+        policyBtn.style.display = 'flex'
+      } else {
+        policyBtn.style.display = 'none'
       }
     }
     
@@ -1009,13 +1241,14 @@ class RefundForm {
         this.handlePolicyClick()
       })
     }
+    
+    // Setup contact modal
+    this.setupContactModal()
   }
   
   // Handle contact button click
   handleContactClick() {
-    // You can customize this URL or add URL parameter support
-    const contactUrl = 'https://www.hunt-tickets.com/contact'
-    window.open(contactUrl, '_blank', 'noopener,noreferrer')
+    this.showContactModal()
   }
   
   // Handle policy button click
@@ -1072,6 +1305,82 @@ class RefundForm {
 
   t(key) {
     return translations[this.currentLang][key] || key
+  }
+
+  // Setup contact modal functionality
+  setupContactModal() {
+    const modal = document.getElementById('contact-modal')
+    const closeBtn = document.getElementById('contact-modal-close')
+    const overlay = document.getElementById('contact-modal-overlay')
+    const whatsappBtn = document.getElementById('whatsapp-contact')
+    const emailBtn = document.getElementById('email-contact')
+    
+    if (!modal) return
+    
+    // Close modal handlers
+    const closeModal = () => {
+      modal.classList.remove('show')
+      setTimeout(() => {
+        modal.style.display = 'none'
+      }, 300)
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal)
+    }
+    
+    if (overlay) {
+      overlay.addEventListener('click', closeModal)
+    }
+    
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        closeModal()
+      }
+    })
+    
+    // WhatsApp contact
+    if (whatsappBtn) {
+      whatsappBtn.addEventListener('click', () => {
+        const message = this.currentLang === 'es' 
+          ? 'Hola, necesito ayuda con mi solicitud de reembolso.'
+          : 'Hello, I need help with my refund request.'
+        
+        const whatsappUrl = `https://wa.me/+573138479816?text=${encodeURIComponent(message)}`
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+        closeModal()
+      })
+    }
+    
+    // Email contact
+    if (emailBtn) {
+      emailBtn.addEventListener('click', () => {
+        const subject = this.currentLang === 'es' 
+          ? 'Solicitud de Ayuda - Reembolso'
+          : 'Help Request - Refund'
+        
+        const body = this.currentLang === 'es'
+          ? 'Hola,%0A%0ANecesito ayuda con mi solicitud de reembolso.%0A%0AGracias.'
+          : 'Hello,%0A%0AI need help with my refund request.%0A%0AThank you.'
+        
+        const emailUrl = `mailto:support@hunt-tickets.com?subject=${encodeURIComponent(subject)}&body=${body}`
+        window.location.href = emailUrl
+        closeModal()
+      })
+    }
+  }
+  
+  // Show contact modal
+  showContactModal() {
+    const modal = document.getElementById('contact-modal')
+    if (modal) {
+      modal.style.display = 'flex'
+      // Small delay to trigger animation
+      setTimeout(() => {
+        modal.classList.add('show')
+      }, 10)
+    }
   }
 
 }

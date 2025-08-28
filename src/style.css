@@ -42,10 +42,10 @@
   --error: #dc3545;
   --error-bg: #f8d7da;
   --warning: #ffc107;
-  --input-bg: rgba(250, 250, 249, 0.9);
-  --input-border: rgba(0, 0, 0, 0.15);
-  --input-focus-border: #6c757d;
-  --input-focus-bg: #fafaf9;
+  --input-bg: rgba(255, 255, 255, 0.7);
+  --input-border: rgba(0, 0, 0, 0.08);
+  --input-focus-border: #8b7355;
+  --input-focus-bg: rgba(255, 255, 255, 0.85);
   --checkbox-bg: rgba(0, 0, 0, 0.05);
   --checkbox-border: rgba(0, 0, 0, 0.2);
   --checkbox-checked-bg: #fafaf9;
@@ -174,19 +174,26 @@ body {
 .contact-btn {
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  border-radius: 10px;
-  height: 32px;
+  border-radius: 12px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0 0.75rem;
+  padding: 0 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   color: var(--text-secondary);
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+[data-theme="light"] .contact-btn {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .contact-btn:hover {
@@ -201,19 +208,26 @@ body {
 .policy-btn {
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  border-radius: 10px;
-  height: 32px;
+  border-radius: 12px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0 0.75rem;
+  padding: 0 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   color: var(--text-secondary);
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+[data-theme="light"] .policy-btn {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .policy-btn:hover {
@@ -228,9 +242,9 @@ body {
 .theme-toggle {
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  border-radius: 10px;
-  width: 36px;
-  height: 32px;
+  border-radius: 12px;
+  width: 40px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,6 +252,13 @@ body {
   transition: all 0.2s ease;
   color: var(--text-secondary);
   position: relative;
+}
+
+[data-theme="light"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .theme-toggle:hover {
@@ -276,10 +297,17 @@ body {
   position: relative;
   display: inline-flex;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 2px;
-  width: 80px;
-  height: 32px;
+  width: 86px;
+  height: 36px;
+}
+
+[data-theme="light"] .language-toggle {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .lang-btn {
@@ -292,7 +320,7 @@ body {
   cursor: pointer;
   transition: color 0.3s ease;
   font-family: inherit;
-  border-radius: 10px;
+  border-radius: 12px;
   z-index: 2;
   position: relative;
 }
@@ -313,7 +341,7 @@ body {
   width: calc(50% - 2px);
   height: calc(100% - 4px);
   background: var(--accent-primary);
-  border-radius: 10px;
+  border-radius: 12px;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1;
 }
@@ -378,6 +406,17 @@ body {
     0 0 0 1px rgba(255, 255, 255, 0.05);
   position: relative;
   z-index: 10;
+}
+
+[data-theme="light"] .refund-form {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.08), 
+    0 8px 16px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .form-group {
@@ -517,6 +556,14 @@ body {
   padding: 2.5rem;
   margin-bottom: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .intro-section {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .intro-content h3 {
@@ -664,6 +711,8 @@ body {
   gap: 0.75rem;
   padding: 1rem 1.25rem;
   background: var(--input-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--input-border);
   border-radius: 8px;
   cursor: pointer;
@@ -1489,6 +1538,225 @@ body:has(.confirmation-section) .form-header {
   .success-icon-large {
     background: transparent;
     border: 2px solid #000;
+  }
+}
+
+/* Contact Modal Styles */
+.contact-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.contact-modal.show {
+  opacity: 1;
+}
+
+.contact-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.contact-modal-content {
+  position: relative;
+  background: rgba(21, 21, 21, 0.95);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4), 
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.contact-modal.show .contact-modal-content {
+  transform: scale(1);
+}
+
+[data-theme="light"] .contact-modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1), 
+    0 8px 16px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.contact-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="light"] .contact-modal-header {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.contact-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.contact-modal-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.contact-modal-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .contact-modal-close {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .contact-modal-close:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.contact-modal-body {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.contact-modal-body p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.contact-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.contact-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] .contact-option {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .contact-option:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.contact-option-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.whatsapp-option .contact-option-icon {
+  color: #25D366;
+}
+
+.email-option .contact-option-icon {
+  color: var(--text-secondary);
+}
+
+.contact-option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contact-option-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.contact-option-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+/* Mobile styles for contact modal */
+@media (max-width: 640px) {
+  .contact-modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+  
+  .contact-modal-header {
+    padding: 1.25rem 1.25rem 0 1.25rem;
+  }
+  
+  .contact-modal-body {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+  }
+  
+  .contact-option {
+    padding: 0.875rem;
+  }
+  
+  .contact-option-title {
+    font-size: 0.95rem;
+  }
+  
+  .contact-option-desc {
+    font-size: 0.8rem;
   }
 }
 
